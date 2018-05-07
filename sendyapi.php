@@ -10,10 +10,9 @@ if (!defined('_PS_VERSION_'))
 */
 class SendyApi extends Module
 {
-	public function __construct()
-	  {
+	public function __construct() {
 	    $this->name = 'SendyApi';
-	    $this->tab = 'front_office_features';
+	    $this->tab = 'administration';
 	    $this->version = '1.0.0';
 	    $this->author = 'Sendy';
 	    $this->need_instance = 0;
@@ -29,6 +28,22 @@ class SendyApi extends Module
 
 	    if (!Configuration::get('MYMODULE_NAME'))
 	      $this->warning = $this->l('No name provided');
-	  }
+	}
+
+	public function install() {
+	  if(Shop::isFeatureActive())
+	    Shop::setContext(Shop::CONTEXT_ALL);
+
+	  if (!parent::install() || !$this->registerHook('leftColumn') || !$this->registerHook('header') || !Configuration::updateValue('MYMODULE_NAME', 'Sendy Api'))
+      	return false;
+	  
+	  return true;
+	}
+
+	public function uninstall() {
+	  if (!parent::uninstall())
+	    return false;
+	  return true;
+	}  	
 	
 }

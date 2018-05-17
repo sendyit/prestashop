@@ -6,5 +6,5 @@ setup the installation
 
 
 
-##Sendy API Configuration
+Sendy API Configuration
 

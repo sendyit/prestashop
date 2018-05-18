@@ -51,6 +51,8 @@ class SendyApiModule extends Module
            $this->initConfig() &&
            $this->registerHook('actionAdminControllerSetMedia') &&
            $this->registerHook('actionFrontControllerSetMedia') &&
+           $this->registerHook('backOfficeHeader') &&
+           $this->registerHook('displayBackOfficeHeader') &&
            $this->registerHook('displayHome');
 
 
@@ -88,14 +90,13 @@ class SendyApiModule extends Module
     {
        // config should be the one saved on the sendy_api table
         $this->config_values = array(
-            'sendy_api_key' => 'Sendy API Key',
-            'sendy_api_username' => 'Sendy API Username',
-            'api_enviroment' => '',
-            'api_from' => '', #get current location here
-            'api_building' => '',  #try to prefill with location
-            'api_floor' => '', #leave blank
-            'other_details' => '' #other details
-
+          'sendy_api_key' => 'mysendykey',
+          'sendy_api_username' => 'mysendyusername',
+          'api_enviroment'=> 'sandbox',
+          'api_from' => '', #get current location here
+          'api_building' => '',  #try to prefill with location
+          'api_floor' => '', #leave blank
+          'other_details' => '' #other details
         );
 
         return $this->setConfigValues($this->config_values);
@@ -132,9 +133,9 @@ class SendyApiModule extends Module
           case 'saveConfig':
 
               $this->config_values =  array(
-                  'sendy_api_key' => 'Sendy API Key',
-                  'sendy_api_username' => 'Sendy API Username',
-                  'api_enviroment'=> '',
+                  'sendy_api_key' => 'mysendykey',
+                  'sendy_api_username' => 'mysendyusername',
+                  'api_enviroment'=> 'sandbox',
                   'api_from' => '', #get current location here
                   'api_building' => '',  #try to prefill with location
                   'api_floor' => '', #leave blank
@@ -373,6 +374,16 @@ class SendyApiModule extends Module
     public static function isAdminPage($page)
     {
         return Tools::getValue('controller') === 'Admin' . ucfirst($page);
+    }
+
+
+    public function hookDisplayBackOfficeHeader($params){
+      $this->hookBackOfficeHeader($params);
+    }
+
+    public function hookBackOfficeHeader($params) {
+      $this->context->controller->addJS($this->getPathUri().'views/js/custom.js', 'all');
+      $this->context->controller->addCSS($this->getPathUri().'views/js/custom.css', 'all');
     }
 
     /**

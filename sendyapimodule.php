@@ -51,8 +51,6 @@ class SendyApiModule extends Module
            $this->initConfig() &&
            $this->registerHook('actionAdminControllerSetMedia') &&
            $this->registerHook('actionFrontControllerSetMedia') &&
-           $this->registerHook('backOfficeHeader') &&
-           $this->registerHook('displayBackOfficeHeader') &&
            $this->registerHook('displayHome');
 
 
@@ -74,12 +72,10 @@ class SendyApiModule extends Module
     /**
      * Add the CSS & JavaScript files you want to be loaded in BO.
      */
-    public function hookActionAdminControllerSetMedia()
+    public function hookActionAdminControllerSetMedia($params)
     {
-        if ($this->isConfigPage()) {
-            $this->context->controller->addJS($this->_path . 'views/js/configuration.js');
-            $this->context->controller->addCSS($this->_path . 'views/css/configuration.css');
-        }
+      $this->context->controller->addJS($this->getPathUri().'views/js/custom.js');
+      $this->context->controller->addCSS($this->getPathUri().'views/css/custom.css');
     }
 
     /**
@@ -107,6 +103,7 @@ class SendyApiModule extends Module
      */
     public function getContent()
     {
+
         $this->config_values = $this->getConfigValues();
 
         $this->context->smarty->assign(array(

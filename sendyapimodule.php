@@ -90,6 +90,7 @@ class SendyApiModule extends Module
         $this->config_values = array(
             'sendy_api_key' => 'Sendy API Key',
             'sendy_api_username' => 'Sendy API Username',
+            'api_enviroment' => '',
             'api_from' => '', #get current location here
             'api_building' => '',  #try to prefill with location
             'api_floor' => '', #leave blank
@@ -133,6 +134,7 @@ class SendyApiModule extends Module
               $this->config_values =  array(
                   'sendy_api_key' => 'Sendy API Key',
                   'sendy_api_username' => 'Sendy API Username',
+                  'api_enviroment'=> '',
                   'api_from' => '', #get current location here
                   'api_building' => '',  #try to prefill with location
                   'api_floor' => '', #leave blank
@@ -164,6 +166,16 @@ class SendyApiModule extends Module
      */
     protected function getConfigForm()
     {
+      $options = array(
+           array(
+             'id_option' => 1,
+             'name' => 'SandBox'
+           ),
+           array(
+             'id_option' => 2,
+             'name' => 'Live'
+           ),
+ )       ;
         return array(
             'form' => array(
                 'legend' => array(
@@ -184,6 +196,17 @@ class SendyApiModule extends Module
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
                         'required' => true
+                    ),
+                    array(
+                        'label' => $this->l('Enviroment'),
+                        'name' => 'api_enviroment',
+                        'type' => 'select',
+                        'required' => true,
+                        'options' => array(
+                          'query' => $options,
+                          'id' => 'id_option',
+                          'name' => 'name'
+                        )
                     ),
                     array(
                         'label' => $this->l('From'),
@@ -254,12 +277,17 @@ class SendyApiModule extends Module
         return json_decode(Configuration::get($this->name), true);
     }
 
+    public function autheticateApi($api_key, $api_username){
+
+    }
+
     /**
      * Set configuration array to database
      * @param array $config
      * @param bool $merge when true, $config can be only a subset to modify or add additional fields
      * @return array
      */
+
     public function setConfigValues($config, $merge = false)
     {
         if ($merge) {

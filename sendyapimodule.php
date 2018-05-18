@@ -1,10 +1,10 @@
 <?php
 /**
  * Sendy API Module
- * 
+ *
  *  @author    Griffin M
  *  @copyright Sendy
- *  
+ *
  */
 
 if (!defined('_PS_VERSION_')) {
@@ -45,13 +45,16 @@ class SendyApiModule extends Module
      */
     public function install()
     {
-        include dirname(__FILE__) . '/sql/install.php';
+        #include dirname(__FILE__) . '/sql/install.php';
 
         return parent::install() &&
-                $this->initConfig() &&
-                $this->registerHook('actionAdminControllerSetMedia') &&
-                $this->registerHook('actionFrontControllerSetMedia') &&
-                $this->registerHook('displayHome');
+           $this->initConfig() &&
+           $this->registerHook('actionAdminControllerSetMedia') &&
+           $this->registerHook('actionFrontControllerSetMedia') &&
+           $this->registerHook('displayHome');
+
+
+
     }
 
     /**
@@ -87,11 +90,11 @@ class SendyApiModule extends Module
         $this->config_values = array(
             'sendy_api_key' => 'Sendy API Key',
             'sendy_api_username' => 'Sendy API Username',
-            'from' => '', #get current location here
-            'building' => '',  #try to prefill with location
-            'floor' => '', #leave blank
+            'api_from' => '', #get current location here
+            'api_building' => '',  #try to prefill with location
+            'api_floor' => '', #leave blank
             'other_details' => '' #other details
-              
+
         );
 
         return $this->setConfigValues($this->config_values);
@@ -121,31 +124,39 @@ class SendyApiModule extends Module
      */
     protected function postProcess()
     {
-        $output = '';
+      $output = '';
 
-        switch ($this->getPostSubmitValue()) {
-            /* save module configuration */
-            case 'saveConfig':
-             
-                $config_keys = array_keys($this->config_values);
-                unset($config_keys['quote']); // language field was set
+      switch ($this->getPostSubmitValue()) {
+          /* save module configuration */
+          case 'saveConfig':
 
-                foreach ($config_keys as $key) {
-                    $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
-                }
+              $this->config_values =  array(
+                  'sendy_api_key' => 'Sendy API Key',
+                  'sendy_api_username' => 'Sendy API Username',
+                  'api_from' => '', #get current location here
+                  'api_building' => '',  #try to prefill with location
+                  'api_floor' => '', #leave blank
+                  'other_details' => '' #other details
+              );
+              $config_keys = array_keys($this->config_values);
 
-                if ($this->setConfigValues($this->config_values)) {
-                    $output .= $this->displayConfirmation($this->l('Settings updated'));
-                }
+              foreach ($config_keys as $key) {
+                  $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
+              }
 
-            // it continues to default
+              if ($this->setConfigValues($this->config_values)) {
+                  $output .= $this->displayConfirmation($this->l('Settings updated'));
+              }
 
-            default:
-                $output .= $this->renderForm();
-                break;
-        }
+          // it continues to default
 
-        return $output;
+          default:
+              $output .= $this->renderForm();
+              break;
+      }
+
+      return $output;
+
     }
 
     /**
@@ -176,20 +187,20 @@ class SendyApiModule extends Module
                     ),
                     array(
                         'label' => $this->l('From'),
-                        'name' => 'from',
+                        'name' => 'api_from',
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
                         'required' => true
                     ),
                     array(
                         'label' => $this->l('Building'),
-                        'name' => 'building',
+                        'name' => 'api_building',
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
                     ),
                     array(
                         'label' => $this->l('Floor'),
-                        'name' => 'floor',
+                        'name' => 'api_floor',
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
                     ),
@@ -245,7 +256,7 @@ class SendyApiModule extends Module
 
     /**
      * Set configuration array to database
-     * @param array $config 
+     * @param array $config
      * @param bool $merge when true, $config can be only a subset to modify or add additional fields
      * @return array
      */
@@ -258,6 +269,8 @@ class SendyApiModule extends Module
         if (Configuration::updateValue($this->name, json_encode($config))) {
             return $config;
         }
+
+
 
         return false;
     }

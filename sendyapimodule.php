@@ -146,11 +146,22 @@ class SendyApiModule extends Module
                   $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
               }
 
-              if ($this->setConfigValues($this->config_values)) {
-                  $output .= $this->displayConfirmation($this->l('Settings updated'));
+              $api_key = $this->config_values['sendy_api_key'];
+              $api_username  = $this->config_values['sendy_api_username'];
+              $api_env = $this->config_values['api_enviroment'];
+
+              $res = $this->connectSendyApi($api_key, $api_username, $api_env);
+              $res = json_decode($res, true);
+              if($res["status"]){
+                $output .= $this->displayConfirmation($this->l(json_encode($res)));
+                if ($this->setConfigValues($this->config_values)) {
+                     $output .= $this->displayConfirmation($this->l('Settings updated'));
+                 }
+              } else {
+                $output .= $this->displayError($this->l($res['description']));
               }
 
-          // it continues to default
+        // it continues to default
 
           default:
               $output .= $this->renderForm();
@@ -168,11 +179,11 @@ class SendyApiModule extends Module
     {
       $options = array(
            array(
-             'id_option' => 1,
+             'id_option' => 'sandbox',
              'name' => 'SandBox'
            ),
            array(
-             'id_option' => 2,
+             'id_option' => 'live',
              'name' => 'Live'
            ),
  )       ;
@@ -277,8 +288,35 @@ class SendyApiModule extends Module
         return json_decode(Configuration::get($this->name), true);
     }
 
-    public function autheticateApi($api_key, $api_username){
+    public function connectSendyApi($api_key, $api_username, $env = 'sandbox'){
+        $request  = '{
+                      "command": "rider_location",
+                      "data": {
+                        "api_key": "'.$api_key.'",
+                        "api_username": "'.$api_username.'",
+                        "lat": -1.28869,
+                        "long": 36.823363
+                      },
+                      "request_token_id": "request_token_id"
+                    }';
 
+        if($env == 'sandbox'){
+          $url = 'https://apitest.sendyit.com/v1/';
+        } else {
+          $url = 'https://api.sendyit.com/v1/';
+        }
+        $ch = curl_init( $url );
+        # Setup request to send json via POST.
+        $payload = json_encode(json_decode($request, true));
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        # Print response.
+        return $result;
     }
 
     /**

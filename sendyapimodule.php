@@ -2,15 +2,14 @@
 /**
  * Sendy API Module
  *
- *  @author    Griffin M
- *  @copyright Sendy
+ * @author    Griffin M
+ * @copyright Sendy
  *
  */
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-
 class SendyApiModule extends Module
 {
 
@@ -48,11 +47,10 @@ class SendyApiModule extends Module
         #include dirname(__FILE__) . '/sql/install.php';
 
         return parent::install() &&
-           $this->initConfig() &&
-           $this->registerHook('actionAdminControllerSetMedia') &&
-           $this->registerHook('actionFrontControllerSetMedia') &&
-           $this->registerHook('displayHome');
-
+            $this->initConfig() &&
+            $this->registerHook('actionAdminControllerSetMedia') &&
+            $this->registerHook('actionFrontControllerSetMedia') &&
+            $this->registerHook('displayHome');
 
 
     }
@@ -66,7 +64,7 @@ class SendyApiModule extends Module
         include dirname(__FILE__) . '/sql/uninstall.php';
 
         return Configuration::deleteByName($this->name) &&
-                parent::uninstall();
+            parent::uninstall();
     }
 
     /**
@@ -74,8 +72,9 @@ class SendyApiModule extends Module
      */
     public function hookActionAdminControllerSetMedia($params)
     {
-      $this->context->controller->addJS($this->getPathUri().'views/js/custom.js');
-      $this->context->controller->addCSS($this->getPathUri().'views/css/custom.css');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js');
+        $this->context->controller->addCSS($this->getPathUri() . 'views/css/custom.css');
     }
 
     /**
@@ -84,15 +83,17 @@ class SendyApiModule extends Module
      */
     protected function initConfig()
     {
-       // config should be the one saved on the sendy_api table
+        // config should be the one saved on the sendy_api table
         $this->config_values = array(
-          'sendy_api_key' => 'mysendykey',
-          'sendy_api_username' => 'mysendyusername',
-          'api_enviroment'=> 'sandbox',
-          'api_from' => '', #get current location here
-          'api_building' => '',  #try to prefill with location
-          'api_floor' => '', #leave blank
-          'other_details' => '' #other details
+            'sendy_api_key' => 'mysendykey',
+            'sendy_api_username' => 'mysendyusername',
+            'api_enviroment' => 'sandbox',
+            'api_from' => '', #get current location here
+            'api_lat' =>'',
+            'api_long' => '',
+            'api_building' => '',  #try to prefill with location
+            'api_floor' => '', #leave blank
+            'other_details' => '' #other details
         );
 
         return $this->setConfigValues($this->config_values);
@@ -123,50 +124,63 @@ class SendyApiModule extends Module
      */
     protected function postProcess()
     {
-      $output = '';
+        $output = '';
 
-      switch ($this->getPostSubmitValue()) {
-          /* save module configuration */
-          case 'saveConfig':
+        switch ($this->getPostSubmitValue()) {
+            /* save module configuration */
+            case 'saveConfig':
 
-              $this->config_values =  array(
-                  'sendy_api_key' => 'mysendykey',
-                  'sendy_api_username' => 'mysendyusername',
-                  'api_enviroment'=> 'sandbox',
-                  'api_from' => '', #get current location here
-                  'api_building' => '',  #try to prefill with location
-                  'api_floor' => '', #leave blank
-                  'other_details' => '' #other details
-              );
-              $config_keys = array_keys($this->config_values);
+                $this->config_values = array(
+                    'sendy_api_key' => 'mysendykey',
+                    'sendy_api_username' => 'mysendyusername',
+                    'api_enviroment' => 'sandbox',
+                    'api_from' => '', #get current location here
+                    'api_lat'=> '',
+                    'api_long' => '',
+                    'api_building' => '',  #try to prefill with location
+                    'api_floor' => '', #leave blank
+                    'other_details' => '' #other details
+                );
+                $config_keys = array_keys($this->config_values);
 
-              foreach ($config_keys as $key) {
-                  $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
-              }
+                foreach ($config_keys as $key) {
+                    $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
+                }
 
-              $api_key = $this->config_values['sendy_api_key'];
-              $api_username  = $this->config_values['sendy_api_username'];
-              $api_env = $this->config_values['api_enviroment'];
+                $api_key = $this->config_values['sendy_api_key'];
+                $api_username = $this->config_values['sendy_api_username'];
+                $api_env = $this->config_values['api_enviroment'];
 
-              $res = $this->connectSendyApi($api_key, $api_username, $api_env);
-              $res = json_decode($res, true);
-              if($res["status"]){
-                $output .= $this->displayConfirmation($this->l(json_encode($res)));
-                if ($this->setConfigValues($this->config_values)) {
-                     $output .= $this->displayConfirmation($this->l('Settings updated'));
-                 }
-              } else {
-                $output .= $this->displayError($this->l($res['description']));
-              }
 
-        // it continues to default
+                $res = $this->connectSendyApi($api_key, $api_username, $api_env);
+                $res = json_decode($res, true);
+                if ($res["status"]) {
+                    //$output .= $this->displayConfirmation($this->l(json_encode($res)));
+                    if ($this->setConfigValues($this->config_values)) {
+                        $output .= $this->displayConfirmation($this->l('Settings updated'));
+                        $output .= $this->displayConfirmation($this->l(json_encode($this->getConfigValues())));
 
-          default:
-              $output .= $this->renderForm();
-              break;
-      }
+                    }
+                } else {
+                    $output .= $this->displayError($this->l($res['description']));
+                }
 
-      return $output;
+                $quote = $this->getPriceQuote($api_key, $api_username, $api_env);
+                $quote = json_decode($quote, true);
+                if ($quote["status"]) {
+                    $output .= $this->displayConfirmation($this->l(json_encode($quote)));
+                } else {
+                    $output .= $this->displayError($this->l($quote['description']));
+                }
+
+            // it continues to default
+
+            default:
+                $output .= $this->renderForm();
+                break;
+        }
+
+        return $output;
 
     }
 
@@ -175,16 +189,16 @@ class SendyApiModule extends Module
      */
     protected function getConfigForm()
     {
-      $options = array(
-           array(
-             'id_option' => 'sandbox',
-             'name' => 'SandBox'
-           ),
-           array(
-             'id_option' => 'live',
-             'name' => 'Live'
-           ),
- )       ;
+        $options = array(
+            array(
+                'id_option' => 'sandbox',
+                'name' => 'SandBox'
+            ),
+            array(
+                'id_option' => 'live',
+                'name' => 'Live'
+            ),
+        );
         return array(
             'form' => array(
                 'legend' => array(
@@ -212,16 +226,27 @@ class SendyApiModule extends Module
                         'type' => 'select',
                         'required' => true,
                         'options' => array(
-                          'query' => $options,
-                          'id' => 'id_option',
-                          'name' => 'name'
+                            'query' => $options,
+                            'id' => 'id_option',
+                            'name' => 'name'
                         )
                     ),
                     array(
                         'label' => $this->l('From'),
                         'name' => 'api_from',
                         'type' => 'text',
-                        'class' => 'fixed-width-lg',
+                        'required' => true
+                    ),
+                    array(
+                        'label' => $this->l('Lat'),
+                        'name' => 'api_lat',
+                        'type' => 'text',
+                        'required' => true
+                    ),
+                    array(
+                        'label' => $this->l('Long'),
+                        'name' => 'api_long',
+                        'type' => 'text',
                         'required' => true
                     ),
                     array(
@@ -277,6 +302,7 @@ class SendyApiModule extends Module
         return $helper->generateForm(array($this->getConfigForm()));
     }
 
+
     /**
      * Get configuration array from database
      * @return array
@@ -286,35 +312,117 @@ class SendyApiModule extends Module
         return json_decode(Configuration::get($this->name), true);
     }
 
-    public function connectSendyApi($api_key, $api_username, $env = 'sandbox'){
-        $request  = '{
+    public function connectSendyApi($api_key, $api_username, $env = 'sandbox')
+    {
+        $request = '{
                       "command": "rider_location",
                       "data": {
-                        "api_key": "'.$api_key.'",
-                        "api_username": "'.$api_username.'",
+                        "api_key": "' . $api_key . '",
+                        "api_username": "' . $api_username . '",
                         "lat": -1.28869,
                         "long": 36.823363
                       },
                       "request_token_id": "request_token_id"
                     }';
 
-        if($env == 'sandbox'){
-          $url = 'https://apitest.sendyit.com/v1/';
+        if ($env == 'sandbox') {
+            $url = 'https://apitest.sendyit.com/v1/';
         } else {
-          $url = 'https://api.sendyit.com/v1/';
+            $url = 'https://api.sendyit.com/v1/';
         }
-        $ch = curl_init( $url );
+        $ch = curl_init($url);
         # Setup request to send json via POST.
         $payload = json_encode(json_decode($request, true));
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         # Return response instead of printing.
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         # Send request.
         $result = curl_exec($ch);
         curl_close($ch);
         # Print response.
         return $result;
+    }
+
+    /**
+     * perform a price request
+     * set 'from' as store's location
+     * 'to' to be set by customer during checkout
+     * return a price quote
+     */
+    public function getPriceQuote($api_to, $to_lat, $to_long)
+    {
+        $api_key = $this->config_values['api_key'];
+        $api_username = $this->config_values['api_username'];
+        $env = $this->config_values['api_enviroment'];
+        $request = '{
+                      "command": "request",
+                      "data": {
+                        "api_key": "' . $api_key . '",
+                        "api_username": "' . $api_username . '",
+                        "vendor_type": 1,
+                        "from": {
+                          "from_name": "'.$this->config_values['api_from'].'",
+                          "from_lat": "'.$this->config_values['api_lat'].'",
+                          "from_long":"'.$this->config_values['api_long'].'",
+                          "from_description": ""
+                        },
+                        "to": {
+                          "to_name": "'.$api_to.'",
+                          "to_lat": "'.$to_lat.'",
+                          "to_long": "'.$to_long.'",
+                          "to_description": ""
+                        },
+                        "recepient": {
+                          "recepient_name": "Sendy User",
+                          "recepient_phone": "0728561783",
+                          "recepient_email": "support@sendy.co.ke"
+                        },
+                        "delivery_details": {
+                          "pick_up_date": "2016-04-20 12:12:12",
+                          "collect_payment": {
+                            "status": false,
+                            "pay_method": 0,
+                            "amount": 10
+                          },
+                          "return": true,
+                          "note": " Sample note",
+                          "note_status": true,
+                          "request_type": "delivery",
+                          "order_type": "ondemand_delivery",
+                          "ecommerce_order": "ecommerce_order_001",
+                          "skew": 1,
+                          "package_size": [
+                            {
+                              "weight": 20,
+                              "height": 10,
+                              "width": 200,
+                              "length": 30,
+                              "item_name": "laptop"
+                            }
+                          ]
+                        }
+                      },
+                      "request_token_id": "request_token_id"
+                    }';
+        if ($env == 'sandbox') {
+            $url = 'https://apitest.sendyit.com/v1/#request';
+        } else {
+            $url = 'https://api.sendyit.com/v1/#request';
+        }
+        $ch = curl_init($url);
+        # Setup request to send json via POST.
+        $payload = json_encode(json_decode($request, true));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        # Print response.
+        return $result;
+
     }
 
     /**
@@ -335,12 +443,19 @@ class SendyApiModule extends Module
         }
 
 
-
         return false;
     }
 
+    public function updateFromConfig($api_from, $api_lat, $api_long){
+        $config = $this->getConfigValues();
+        $config['api_from'] = $api_from;
+        $config['api_lat'] = $api_lat;
+        $config['api_long'] = $api_long;
+        $this->setConfigValues($config);
+    }
+
     /**
-     * Get the action submited from the configuration page
+     * Get the action submitted from the configuration page
      * @return string
      */
     protected function getPostSubmitValue()
@@ -355,7 +470,7 @@ class SendyApiModule extends Module
     }
 
     /**
-     * Determins if on the module configuration page
+     * Determines if on the module configuration page
      * @return bool
      */
     public function isConfigPage()
@@ -374,13 +489,16 @@ class SendyApiModule extends Module
     }
 
 
-    public function hookDisplayBackOfficeHeader($params){
-      $this->hookBackOfficeHeader($params);
+    public function hookDisplayBackOfficeHeader($params)
+    {
+        $this->hookBackOfficeHeader($params);
     }
 
-    public function hookBackOfficeHeader($params) {
-      $this->context->controller->addJS($this->getPathUri().'views/js/custom.js', 'all');
-      $this->context->controller->addCSS($this->getPathUri().'views/js/custom.css', 'all');
+    public function hookBackOfficeHeader($params)
+    {
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
+        $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
     }
 
     /**
@@ -388,6 +506,7 @@ class SendyApiModule extends Module
      */
     public function hookActionFrontControllerSetMedia()
     {
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
         $this->context->controller->addJS($this->_path . '/views/js/front.js');
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
     }
@@ -404,4 +523,17 @@ class SendyApiModule extends Module
 
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
+
+    public function hookDisplayShoppingCart($params)
+    {
+        !isset($params['tpl']) && $params['tpl'] = 'displayHome';
+
+        $this->config_values = $this->getConfigValues();
+        $this->smarty->assign($this->config_values);
+
+        return $this->display(__FILE__, $params['tpl'] . '.tpl');
+    }
+
 }
+
+?>

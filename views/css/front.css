@@ -5,20 +5,109 @@
  *  @copyright Sendy
  */
 #sendyapimodule {
-  margin-top: 20px; }
-  #sendyapimodule .block_content blockquote {
+    margin-top: 20px;
+}
+
+#sendyapimodule .block_content blockquote {
     margin-top: 10px;
+    height: auto;
+    width: auto;
+    background-color: #ffffff;
     color: #444;
     font-size: 15px;
     font-style: italic;
-    border-left: 2px solid #4088d2;
-    padding: 10px; }
-    #sendyapimodule .block_content blockquote span {
-      display: block;
-      color: #900;
-      text-align: right;
-      margin-top: 10px;
-      font-style: normal;
-      font-weight: bold; }
+    text-align: center;
+}
+
+#sendyapimodule .block_content blockquote span {
+    display: block;
+    color: #900;
+    text-align: right;
+    margin-top: 10px;
+    font-style: normal;
+    font-weight: bold;
+}
+
+#sendyapimodule .input {
+    color: #1782c5;
+    font-size: 14px;
+    font-style: normal;
+    border-radius: 5px;
+    padding: 5px;
+    display: none;
+    width: 250px;
+    border: 1px solid #A9A9A9;
+    text-align: center;
+}
+
+#sendyapimodule .input:focus {
+    border-color: #1782c5 !important;
+}
+#sendyapimodule .input-block{
+    margin: auto;
+    width: 70%;
+    /*margin-left: auto;*/
+}
+
+#sendyapimodule .btn {
+    background-color: #1782c5;
+    color: white;
+    font-size: 14px;
+    font-style: normal;
+    width: auto;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#sendyapimodule .btn:hover {
+    background-color: #f57f20;
+    color: white;
+}
+
+#sendyapimodule .divhidden {
+    height: 50px;
+    width: 250px;
+    display: none;
+    margin-bottom: 10px;
+    background-color: #f57f20;
+    color: #444;
+    font-size: 15px;
+    font-style: italic;
+    padding: 30px;
+}
+
+#sendyapimodule .loader {
+    border: 1px solid #1782c5;
+    border-radius: 50%;
+    display: none;
+    border-top: 1px solid #f3f3f3;
+    width: 60px;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 /*# sourceMappingURL=front.css.map */

@@ -514,15 +514,16 @@ class SendyApiModule extends Module
     /**
      * Homepage content hook (Technical name: displayHome)
      */
-    public function hookDisplayHome($params)
-    {
-        !isset($params['tpl']) && $params['tpl'] = 'displayHome';
+    
+    // public function hookDisplayHome($params)
+    // {
+    //     !isset($params['tpl']) && $params['tpl'] = 'displayHome';
 
-        $this->config_values = $this->getConfigValues();
-        $this->smarty->assign($this->config_values);
+    //     $this->config_values = $this->getConfigValues();
+    //     $this->smarty->assign($this->config_values);
 
-        return $this->display(__FILE__, $params['tpl'] . '.tpl');
-    }
+    //     return $this->display(__FILE__, $params['tpl'] . '.tpl');
+    // }
 
     public function hookDisplayShoppingCart($params)
     {

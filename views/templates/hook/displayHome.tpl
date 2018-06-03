@@ -9,7 +9,7 @@
             <div class="loader"></div>
             <div id="pricing" class="divHidden">
                 <div class="imagey" >
-                    {*<img class=d"image-direct" src="../../images/express.png" >*}
+                    <img class="image-direct" src="{$base_dir}modules/sendyapimodule/views/img/direct.png" >
                 </div>
                 <div class="show-type" >Direct</div>
                 <div class="show-currency" >KES</div>

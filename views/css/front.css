@@ -162,6 +162,10 @@
 #sendyapimodule .show-price {
     display: inline-block;
 }
+#sendyapimodule .image-direct {
+    width: 25px;
+    height: 25px;
+}
 #sendyapimodule .show-currency {
     display: inline-block;
     padding-bottom: 5px;
@@ -182,7 +186,7 @@
     margin: 0px auto;
     border-radius: 50%;
     margin-bottom: -15px;
-    background-image:url('../images/express.png');
+    /*background-image:url('../img/direct.png');*/
     padding-top: 10px;
     font-size: 15px;
     color: rgba(153, 153, 153, 0.71);

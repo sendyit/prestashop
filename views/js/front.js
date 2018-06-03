@@ -35,13 +35,14 @@ $(document).ready(function () {
                 },
                 success: function(res) {
                     // ....
-                    console.log(res);
-                    // let obj = JSON.parse(res);
-                    // alert(obj.status);
+                   console.log(res);
+                   //  alert(res[1].amount);
+                    // let d = JSON.parse(res.data);
+                    // console.log(d.amount);
                     $('.loader').hide();
                     $('.divHidden').show();
+                    // $(".show-price").text("Hello world!");
                     $("#submitBtn").css("display", "none");
-                    // $("#pricing").html(res);
                 }
             })
                 .fail(function (er) {

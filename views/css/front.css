@@ -1,0 +1,190 @@
+/**
+ * Sendy API Module
+ *
+ *  @author    Griffin M
+ *  @copyright Sendy
+ */
+#sendyapimodule {
+    margin-top: 20px;
+}
+
+#sendyapimodule .block_content blockquote {
+    margin-top: 10px;
+    height: auto;
+    width: auto;
+    background-color: #ffffff;
+    color: #444;
+    font-size: 15px;
+    /*font-style: italic;*/
+    padding: 5px;
+    text-align: center;
+}
+
+#sendyapimodule .block_content blockquote span {
+    display: block;
+    color: #900;
+    text-align: right;
+    margin-top: 10px;
+    font-style: normal;
+    font-weight: bold;
+}
+
+#sendyapimodule .input {
+    color: #575757;
+    font-size: 13px;
+    font-style: normal;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+}
+
+#sendyapimodule .input:focus {
+    border-color: #1782c5 !important;
+    outline: none;
+}
+#sendyapimodule .input-block{
+    margin: auto;
+    width: 70%;
+    /*margin-left: auto;*/
+}
+
+#sendyapimodule .btn {
+    background-color: #1782c5;
+    color: white;
+    font-size: 13px;
+    font-style: normal;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+#sendyapimodule .btnContinue {
+    background-color: #1782c5;
+    color: white;
+    font-size: 13px;
+    font-style: normal;
+    width:20%;
+    outline: none;
+    border-style: none;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+#sendyapimodule .btnCancel {
+    background-color: #d3d3d3;
+    color: #474747;
+    display: inline-block;
+    font-size: 13px;
+    border-style: none;
+    font-style: normal;
+    width: 20%;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#sendyapimodule .btn:hover {
+    background-color: #f57f20;
+    color: white;
+    outline: none;
+}
+#sendyapimodule .btn:focus {
+    outline: none;
+}
+
+#sendyapimodule .divhidden {
+    height: auto;
+    width: auto;
+    display: none;
+    margin-bottom: 10px;
+    /*background-color: #f57f20;*/
+    color: #1782c5 !important;
+    font-size: 13px;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif!important;
+    /*padding: 30px;*/
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#sendyapimodule .loader {
+    border: 1px solid #1782c5;
+    border-radius: 50%;
+    display: none;
+    border-top: 1px solid #f3f3f3;
+    width: 60px;
+    height: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+#sendyapimodule .dot {
+    height: 12px;
+    width: 12px;
+    float: left;
+    background-color: #f57f20;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 11%;
+    margin-top: 3%;
+    display: inline-block;
+}
+#sendyapimodule .show-price {
+    display: inline-block;
+}
+#sendyapimodule .show-currency {
+    display: inline-block;
+    padding-bottom: 5px;
+}
+#sendyapimodule .show-type {
+    /*padding: 1px;*/
+    font-size: 11px;
+    border: 1px solid #1782c5;
+    margin: 0px auto;
+    width: 50px;
+    background-color: white;
+    border-radius: 4px;
+}
+#sendyapimodule .imagey{
+    height: 55px;
+    border: 1px solid #1782c5;
+    width: 55px;
+    margin: 0px auto;
+    border-radius: 50%;
+    margin-bottom: -15px;
+    background-image:url('../images/express.png');
+    padding-top: 10px;
+    font-size: 15px;
+    color: rgba(153, 153, 153, 0.71);
+}
+/*# sourceMappingURL=front.css.map */

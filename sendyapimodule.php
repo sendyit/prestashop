@@ -10,7 +10,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-class SendyApiModule extends Module
+class SendyApiModule extends CarrierModule
 {
 
     /** @var array Use to store the configuration from database */
@@ -19,10 +19,16 @@ class SendyApiModule extends Module
     /** @var array submit values of the configuration page */
     protected static $config_post_submit_values = array('saveConfig');
 
+    public  $id_carrier;
+
+    private $_html = '';
+    private $_postErrors = array();
+    private $_moduleName = 'sendyapimodule';
+
     public function __construct()
     {
         $this->name = 'sendyapimodule'; // internal identifier, unique and lowercase
-        $this->tab = 'front_office_features'; // backend module coresponding category
+        $this->tab = 'shipping_logistics'; // backend module coresponding category
         $this->version = '1.0.0'; // version number for the module
         $this->author = 'Sendy'; // module author
         $this->need_instance = 0; // load the module when displaying the "Modules" page in backend
@@ -34,8 +40,28 @@ class SendyApiModule extends Module
         $this->description = $this->l('Sendy Prestashop Module for the Sendy public API'); // public description
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?'); // confirmation message at uninstall
-
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+
+        if (self::isInstalled($this->name))
+        {
+            // Getting carrier list
+            global $cookie;
+            $carriers = Carrier::getCarriers($cookie->id_lang, true, false, false, NULL, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+
+            // Saving id carrier list
+            $id_carrier_list = array();
+            foreach($carriers as $carrier)
+                $id_carrier_list[] .= $carrier['id_carrier'];
+
+            // Testing if Carrier Id exists
+            $warning = array();
+            if (!in_array((int)(Configuration::get('MYCARRIER1_CARRIER_ID')), $id_carrier_list))
+                $warning[] .= $this->l('"Carrier 1"').' ';
+            if (!Configuration::get('MYCARRIER1_OVERCOST'))
+                $warning[] .= $this->l('"Carrier 1 Overcost"').' ';
+            if (count($warning))
+                $this->warning .= implode(' , ',$warning).$this->l('must be configured to use this module correctly').' ';
+        }
     }
 
     /**
@@ -46,12 +72,38 @@ class SendyApiModule extends Module
     {
         #include dirname(__FILE__) . '/sql/install.php';
 
-        return parent::install() &&
-            $this->initConfig() &&
-            $this->registerHook('actionAdminControllerSetMedia') &&
-            $this->registerHook('actionFrontControllerSetMedia') &&
-            $this->registerHook('displayHome');
-
+        $carrierConfig = array(
+            0 => array('name' => 'Express',
+                'id_tax_rules_group' => 0,
+                'active' => true,
+                'deleted' => 0,
+                'shipping_handling' => false,
+                'range_behavior' => 0,
+                'delay' => array('mx' => 'Entrega rapida', 'en' => 'Description 1', Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')) => 'Description 1'),
+                'id_zone' => 1,
+                'is_module' => true,
+                'shipping_external' => true,
+                'external_module_name' => 'mycarrier',
+                'need_range' => true
+            ),
+        );
+        $id_carrier1 = $this->installExternalCarrier($carrierConfig[0]);
+        Configuration::updateValue('MYCARRIER1_CARRIER_ID', (int)$id_carrier1);
+        if (!parent::install() ||
+            !$this->initConfig() ||
+            !$this->registerHook('actionAdminControllerSetMedia') ||
+            !$this->registerHook('actionFrontControllerSetMedia') ||
+            !$this->registerHook('displayHome') ||
+            !Configuration::updateValue('MYCARRIER1_OVERCOST', '') ||
+            !$this->registerHook('updateCarrier'))
+            return false;
+        return true;
+//        return parent::install() &&
+//            $this->initConfig() &&
+//            $this->registerHook('actionAdminControllerSetMedia') &&
+//            $this->registerHook('actionFrontControllerSetMedia') &&
+//            $this->registerHook('displayHome');
+//
 
     }
 
@@ -63,9 +115,99 @@ class SendyApiModule extends Module
     {
         include dirname(__FILE__) . '/sql/uninstall.php';
 
-        return Configuration::deleteByName($this->name) &&
-            parent::uninstall();
+//            parent::uninstall();
+
+        if (!parent::uninstall() ||
+            !Configuration::deleteByName($this->name) ||
+            !Configuration::deleteByName('MYCARRIER1_OVERCOST') ||
+            !$this->unregisterHook('updateCarrier'))
+            return false;
+
+        // Delete External Carrier
+        $Carrier1 = new Carrier((int)(Configuration::get('MYCARRIER1_CARRIER_ID')));
+        // If external carrier is default set other one as default
+        if (Configuration::get('PS_CARRIER_DEFAULT') == (int)($Carrier1->id))
+        {
+            global $cookie;
+            $carriersD = Carrier::getCarriers($cookie->id_lang, true, false, false, NULL, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+            foreach($carriersD as $carrierD)
+                if ($carrierD['active'] AND !$carrierD['deleted'] AND ($carrierD['name'] != $this->_config['name']))
+                    Configuration::updateValue('PS_CARRIER_DEFAULT', $carrierD['id_carrier']);
+        }
+
+        // Then delete Carrier
+        $Carrier1->deleted = 1;
+        if (!$Carrier1->update())
+            return false;
+
+        return true;
     }
+
+    public static function installExternalCarrier($config)
+    {
+        $carrier = new Carrier();
+        $carrier->name = $config['name'];
+        $carrier->id_tax_rules_group = $config['id_tax_rules_group'];
+        $carrier->id_zone = $config['id_zone'];
+        $carrier->active = $config['active'];
+        $carrier->deleted = $config['deleted'];
+        $carrier->delay = $config['delay'];
+        $carrier->shipping_handling = $config['shipping_handling'];
+        $carrier->range_behavior = $config['range_behavior'];
+        $carrier->is_module = $config['is_module'];
+        $carrier->shipping_external = $config['shipping_external'];
+        $carrier->external_module_name = $config['external_module_name'];
+        $carrier->need_range = $config['need_range'];
+
+        $languages = Language::getLanguages(true);
+        foreach ($languages as $language)
+        {
+            if ($language['iso_code'] == 'fr')
+                $carrier->delay[(int)$language['id_lang']] = $config['delay'][$language['iso_code']];
+            if ($language['iso_code'] == 'en')
+                $carrier->delay[(int)$language['id_lang']] = $config['delay'][$language['iso_code']];
+            if ($language['iso_code'] == Language::getIsoById(Configuration::get('PS_LANG_DEFAULT')))
+                $carrier->delay[(int)$language['id_lang']] = $config['delay'][$language['iso_code']];
+        }
+
+        if ($carrier->add())
+        {
+            $groups = Group::getGroups(true);
+            foreach ($groups as $group)
+                Db::getInstance()->autoExecute(_DB_PREFIX_.'carrier_group', array('id_carrier' => (int)($carrier->id), 'id_group' => (int)($group['id_group'])), 'INSERT');
+
+            $rangePrice = new RangePrice();
+            $rangePrice->id_carrier = $carrier->id;
+            $rangePrice->delimiter1 = '0';
+            $rangePrice->delimiter2 = '10000';
+            $rangePrice->add();
+
+            $rangeWeight = new RangeWeight();
+            $rangeWeight->id_carrier = $carrier->id;
+            $rangeWeight->delimiter1 = '0';
+            $rangeWeight->delimiter2 = '10000';
+            $rangeWeight->add();
+
+            $zones = Zone::getZones(true);
+            foreach ($zones as $zone)
+            {
+                Db::getInstance()->autoExecute(_DB_PREFIX_.'carrier_zone', array('id_carrier' => (int)($carrier->id), 'id_zone' => (int)($zone['id_zone'])), 'INSERT');
+                Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_.'delivery', array('id_carrier' => (int)($carrier->id), 'id_range_price' => (int)($rangePrice->id), 'id_range_weight' => NULL, 'id_zone' => (int)($zone['id_zone']), 'price' => '0'), 'INSERT');
+                Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_.'delivery', array('id_carrier' => (int)($carrier->id), 'id_range_price' => NULL, 'id_range_weight' => (int)($rangeWeight->id), 'id_zone' => (int)($zone['id_zone']), 'price' => '0'), 'INSERT');
+            }
+
+            // Copy Logo
+            if (!copy(dirname(__FILE__).'/carrier.jpg', _PS_SHIP_IMG_DIR_.'/'.(int)$carrier->id.'.jpg'))
+                return false;
+
+            // Return ID Carrier
+            return (int)($carrier->id);
+        }
+
+        return false;
+    }
+
+
 
     /**
      * Add the CSS & JavaScript files you want to be loaded in BO.
@@ -528,13 +670,18 @@ class SendyApiModule extends Module
     }
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        if (Context::getContext()->customer->logged == true)
-        {
-            $id_address_delivery = Context::getContext()->cart->id_address_delivery;
-            $address = new Address($id_address_delivery);
-            return 100; // i want to return `$shipping_cost`
-        }
-        return $shipping_cost;
+//        if (Context::getContext()->customer->logged == true)
+//        {
+//            $id_address_delivery = Context::getContext()->cart->id_address_delivery;
+//            $address = new Address($id_address_delivery);
+//            return 100; // i want to return `$shipping_cost`
+//        }
+//        return $shipping_cost;
+
+    }
+    public function getOrderShippingCostExternal($params)
+    {
+        return $this->getOrderShippingCost($params, 0);
     }
 }
 

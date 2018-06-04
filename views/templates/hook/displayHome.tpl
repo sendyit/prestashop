@@ -7,7 +7,7 @@
                <input class="input" id="api_to" type="text" placeholder="Set destination">
             </div>
             <div class="loader"></div>
-            <div id="pricing" style="display: none" class="divHidden">
+            <div id="pricing" style="display: none; color: #1782c5;" class="divHidden">
                 <div class="imagey" >
                     <img class="image-direct" src="{$base_dir}modules/sendyapimodule/views/img/direct.png" >
                 </div>
@@ -15,7 +15,7 @@
                 <div class="show-currency" >KES</div>
                 <div class="show-price" >240</div>
                 <div>
-                <input class="btnContinue" id="continue" type="submit" value="Continue">
+                <input class="btnContinue" id="continue" onclick="setShipping()" type="submit" value="Continue">
                 <input class="btnCancel" id="cancel" onclick="hideDiv()" type="submit" value="Cancel">
                 </div>
             </div>
@@ -33,5 +33,7 @@
         $("#submitBtn").val('Get a Shipping Price Estimate');
         $("#submitBtn").css("display", "block");
 
+    }
+    function setShipping(){
     }
 </script>

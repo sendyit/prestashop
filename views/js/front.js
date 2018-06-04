@@ -16,40 +16,37 @@ $(document).ready(function () {
         to_long = place.geometry.location.lng();
         sendRequest(to_name, to_lat, to_long);
     });
+
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;
         var to_lat = to_lat;
         var to_long = to_long;
-            $.ajax({
-                type: "POST",
-                url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
-                data: {
-                    to_name: to_name,
-                    to_lat: to_lat,
-                    to_long: to_long
-                },
-                beforeSend: function (){
-                    $('.loader').show();
-                    $("#submitBtn").css("background-color","grey");
-                    $("#submitBtn").val('PRICING...');
-                },
-                success: function(res) {
-                    // ....
-                   console.log(res);
-                   //  alert(res[1].amount);
-                    // let d = JSON.parse(res.data);
-                    // console.log(d.amount);
-                    $('.loader').hide();
-                    $('.divHidden').show();
-                    // $(".show-price").text("Hello world!");
-                    $("#submitBtn").css("display", "none");
-                }
+        $.ajax({
+            type: "POST",
+            url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
+            data: {
+                to_name: to_name,
+                to_lat: to_lat,
+                to_long: to_long
+            },
+            beforeSend: function () {
+                $('.loader').show();
+                $("#submitBtn").css("background-color", "grey");
+                $("#submitBtn").val('PRICING...');
+            },
+            success: function (res) {
+                console.log(res);
+                 let data = JSON.parse(res);
+                 let price = data.data.amount;
+                $('.loader').hide();
+                $('.divHidden').show();
+                $(".show-price").text(price);
+                $("#submitBtn").css("display", "none");
+            }
+        })
+            .fail(function (er) {
+                console.log(er);
+                $('.loader').hide();
             })
-                .fail(function (er) {
-                    console.log(er);
-                    $('.loader').hide();
-                })
-
-        // console.log(to_name, to_vicinity, to_lat, to_long);
     }
 });

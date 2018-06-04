@@ -7,7 +7,7 @@
                <input class="input" id="api_to" type="text" placeholder="Set destination">
             </div>
             <div class="loader"></div>
-            <div id="pricing" class="divHidden">
+            <div id="pricing" style="display: none" class="divHidden">
                 <div class="imagey" >
                     <img class="image-direct" src="{$base_dir}modules/sendyapimodule/views/img/direct.png" >
                 </div>
@@ -28,6 +28,7 @@
 <script>
     function hideDiv() {
         $(".divHidden").hide('slow');
+        $('input[type="text"]').val('');
         $("#submitBtn").css("background-color","#1782c5");
         $("#submitBtn").val('Get a Shipping Price Estimate');
         $("#submitBtn").css("display", "block");

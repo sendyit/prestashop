@@ -1,4 +1,3 @@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-qgooVsnsVKnyF8zc30DscS1z5jZ9K-4&libraries=places"></script>
 <?php
 /**
  * Sendy API Module
@@ -73,9 +72,10 @@ class SendyApiModule extends Module
      */
     public function hookActionAdminControllerSetMedia($params)
     {
-//        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js');
         $this->context->controller->addCSS($this->getPathUri() . 'views/css/custom.css');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+
     }
 
     /**
@@ -497,9 +497,10 @@ class SendyApiModule extends Module
 
     public function hookBackOfficeHeader($params)
     {
-//        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
         $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+
     }
 
     /**
@@ -507,9 +508,10 @@ class SendyApiModule extends Module
      */
     public function hookActionFrontControllerSetMedia()
     {
-//        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
         $this->context->controller->addJS($this->_path . '/views/js/front.js');
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+
     }
 
     /**

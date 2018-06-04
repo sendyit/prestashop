@@ -28,7 +28,7 @@ class SendyApiModule extends CarrierModule
     public function __construct()
     {
         $this->name = 'sendyapimodule'; // internal identifier, unique and lowercase
-        $this->tab = 'shipping_logistics'; // backend module coresponding category
+        $this->tab = 'shipping_logistics'; // backend module corresponding category
         $this->version = '1.0.0'; // version number for the module
         $this->author = 'Sendy'; // module author
         $this->need_instance = 0; // load the module when displaying the "Modules" page in backend
@@ -84,7 +84,7 @@ class SendyApiModule extends CarrierModule
                 'is_module' => true,
                 'shipping_external' => true,
                 'external_module_name' => 'mycarrier',
-                'need_range' => true
+                'need_range' => false
             ),
         );
         $id_carrier1 = $this->installExternalCarrier($carrierConfig[0]);
@@ -178,7 +178,7 @@ class SendyApiModule extends CarrierModule
 
             $rangePrice = new RangePrice();
             $rangePrice->id_carrier = $carrier->id;
-            $rangePrice->delimiter1 = '0';
+            $rangePrice->delimiter1 = '240';
             $rangePrice->delimiter2 = '10000';
             $rangePrice->add();
 
@@ -722,7 +722,7 @@ class SendyApiModule extends CarrierModule
                         <div class="margin-form"><input type="text" size="20" name="mycarrier1_overcost" value="'.Tools::getValue('mycarrier1_overcost', Configuration::get('MYCARRIER1_OVERCOST')).'" /></div>
                     </div>
                     <br /><br />
-                </fieldset>                
+                </fieldset>
                 <div class="margin-form"><input class="button" name="submitSave" type="submit"></div>
             </form>
         </div></div>';

@@ -208,7 +208,6 @@ class SendyApiModule extends CarrierModule
     }
 
 
-
     /**
      * Add the CSS & JavaScript files you want to be loaded in BO.
      */
@@ -245,6 +244,7 @@ class SendyApiModule extends CarrierModule
     /**
      * Configuration page
      */
+
     public function getContent()
     {
 
@@ -668,21 +668,123 @@ class SendyApiModule extends CarrierModule
 
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
+    /*
+   ** Form Config Methods
+   **
+   */
+
+    public function getContent1()
+    {
+        $this->_html .= '<h2>' . $this->l('Sendy Api Module').'</h2>';
+        if (!empty($_POST) AND Tools::isSubmit('submitSave'))
+        {
+            $this->_postValidation();
+            if (!sizeof($this->_postErrors))
+                $this->_postProcess();
+            else
+                foreach ($this->_postErrors AS $err)
+                    $this->_html .= '<div class="alert error"><img src="'._PS_IMG_.'admin/forbbiden.gif" alt="nok" /> '.$err.'</div>';
+        }
+        $this->_displayForm();
+        return $this->_html;
+    }
+
+    private function _displayForm()
+    {
+        $this->_html .= '<fieldset>
+        <legend><img src="'.$this->_path.'logo.gif" alt="" /> '.$this->l('My Carrier Module Status').'</legend>';
+
+        $alert = array();
+        if (!Configuration::get('MYCARRIER1_OVERCOST') || Configuration::get('MYCARRIER1_OVERCOST') == '')
+            $alert['carrier1'] = 1;
+
+        if (!count($alert))
+            $this->_html .= '<img src="'._PS_IMG_.'admin/module_install.png" /><strong>'.$this->l('My Carrier is configured and online!').'</strong>';
+        else
+        {
+            $this->_html .= '<img src="'._PS_IMG_.'admin/warn2.png" /><strong>'.$this->l('My Carrier is not configured yet, please:').'</strong>';
+            $this->_html .= '<br />'.(isset($alert['carrier1']) ? '<img src="'._PS_IMG_.'admin/warn2.png" />' : '<img src="'._PS_IMG_.'admin/module_install.png" />').' 1) '.$this->l('Configure the carrier 1 overcost');
+
+        }
+
+        $this->_html .= '</fieldset><div class="clear"> </div>
+            <style>
+                #tabList { clear: left; }
+                .tabItem { display: block; background: #FFFFF0; border: 1px solid #CCCCCC; padding: 10px; padding-top: 20px; }
+            </style>
+            <div id="tabList">
+                <div class="tabItem">
+                    <form action="index.php?tab='.Tools::getValue('tab').'&configure='.Tools::getValue('configure').'&token='.Tools::getValue('token').'&tab_module='.Tools::getValue('tab_module').'&module_name='.Tools::getValue('module_name').'&id_tab=1&section=general" method="post" class="form" id="configForm">
+
+                    <fieldset style="border: 0px;">
+                        <h4>'.$this->l('General configuration').' :</h4>
+                        <label>'.$this->l('My Carrier1 overcost').' : </label>
+                        <div class="margin-form"><input type="text" size="20" name="mycarrier1_overcost" value="'.Tools::getValue('mycarrier1_overcost', Configuration::get('MYCARRIER1_OVERCOST')).'" /></div>
+                    </div>
+                    <br /><br />
+                </fieldset>                
+                <div class="margin-form"><input class="button" name="submitSave" type="submit"></div>
+            </form>
+        </div></div>';
+    }
+    private function _postValidation()
+    {
+        // Check configuration values
+        if (Tools::getValue('mycarrier1_overcost') == '')
+            $this->_postErrors[]  = $this->l('You have to configure at least one carrier');
+    }
+
+    private function _postProcess()
+    {
+        // Saving new configurations
+        if (Configuration::updateValue('MYCARRIER1_OVERCOST', Tools::getValue('mycarrier1_overcost')))
+            $this->_html .= $this->displayConfirmation($this->l('Settings updated'));
+        else
+            $this->_html .= $this->displayErrors($this->l('Settings failed'));
+    }
+    /*
+    ** Hook update carrier
+    **
+    */
+
+    public function hookupdateCarrier($params)
+    {
+        if ((int)($params['id_carrier']) == (int)(Configuration::get('MYCARRIER1_CARRIER_ID')))
+            Configuration::updateValue('MYCARRIER1_CARRIER_ID', (int)($params['carrier']->id));
+    }
+    /*
+    ** Front Methods
+    **
+    ** If you set need_range at true when you created your carrier (in install method), the method called by the cart will be getOrderShippingCost
+    ** If not, the method called will be getOrderShippingCostExternal
+    **
+    ** $params var contains the cart, the customer, the address
+    ** $shipping_cost var contains the price calculated by the range in carrier tab
+    **
+    */
+
     public function getOrderShippingCost($params, $shipping_cost)
     {
-//        if (Context::getContext()->customer->logged == true)
-//        {
-//            $id_address_delivery = Context::getContext()->cart->id_address_delivery;
-//            $address = new Address($id_address_delivery);
-//            return 100; // i want to return `$shipping_cost`
-//        }
-//        return $shipping_cost;
+        // This example returns shipping cost with overcost set in the back-office, but you can call a webservice or calculate what you want before returning the final value to the Cart
+        if ($this->id_carrier == (int)(Configuration::get('MYCARRIER1_CARRIER_ID')) && Configuration::get('MYCARRIER1_OVERCOST') > 1)
+            return (float)(Configuration::get('MYCARRIER1_OVERCOST'));
 
+        // If the carrier is not known, you can return false, the carrier won't appear in the order process
+        return false;
     }
+
     public function getOrderShippingCostExternal($params)
     {
-        return $this->getOrderShippingCost($params, 0);
+        // This example returns the overcost directly, but you can call a webservice or calculate what you want before returning the final value to the Cart
+        if ($this->id_carrier == (int)(Configuration::get('MYCARRIER1_CARRIER_ID')) && Configuration::get('MYCARRIER1_OVERCOST') > 1)
+            return (float)(Configuration::get('MYCARRIER1_OVERCOST'));
+
+        // If the carrier is not known, you can return false, the carrier won't appear in the order process
+        return false;
     }
+
+
+
 }
 
 ?>

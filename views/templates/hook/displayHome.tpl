@@ -7,7 +7,7 @@
                <input class="input" id="api_to" type="text" placeholder="Set destination">
             </div>
             <div class="loader"></div>
-            <div id="pricing" style="display: none" class="divHidden">
+            <div id="pricing" style="display: none; color: #1782c5" class="divHidden">
                 <div class="imagey" >
                     <img class="image-direct" src="{$base_dir}modules/sendyapimodule/views/img/direct.png" >
                 </div>

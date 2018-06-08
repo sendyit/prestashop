@@ -38,7 +38,7 @@ $(document).ready(function () {
 
         // $.ajax({
         //     type: "POST",
-        //     url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
+        //     url: '/prestashop/modules/sendyapimodule1/custom/dataReceiver.php',
         //     data: {
         //         from_name: from_name,
         //         from_lat: from_lat,

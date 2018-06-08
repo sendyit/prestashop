@@ -1,5 +1,5 @@
 <div id="sendyapimodule" class="block">
-    {*<p class="title_block">{l s='Sendy API Module' mod='sendyapimodule'}</p>*}
+    {*<p class="title_block">{l s='Sendy API Module' mod='sendyapimodule1'}</p>*}
     <div class="block_content">
         <blockquote>
             <div class="dot"></div>

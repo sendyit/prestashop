@@ -23,7 +23,7 @@ $(document).ready(function () {
         var to_long = to_long;
         $.ajax({
             type: "POST",
-            url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
+            url: '/prestashop/modules/sendyapimodule1/custom/dataReceiver.php',
             data: {
                 to_name: to_name,
                 to_lat: to_lat,

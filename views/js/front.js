@@ -23,6 +23,7 @@ $(document).ready(function () {
             to_lat = place.geometry.location.lat();
             to_long = place.geometry.location.lng();
             sendRequest(to_name, to_lat, to_long);
+            getLink();
         });
         
       }
@@ -32,9 +33,11 @@ $(document).ready(function () {
         var to_name = to_name;
         var to_lat = to_lat;
         var to_long = to_long;
+        var url = "/modules/sendyapimodule/custom/dataReceiver.php";
+        url = getLink(url);
         $.ajax({
             type: "POST",
-            url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
+            url: url,
             data: {
                 to_name: to_name,
                 to_lat: to_lat,
@@ -59,5 +62,12 @@ $(document).ready(function () {
                 console.log(er);
                 $('.loader').hide();
             })
+    }
+
+    function getLink(url) {
+        var loc = window.location.pathname;
+        var dir = loc.substring(0, loc.lastIndexOf('/'));
+        console.log(dir+url);
+        return dir+url;
     }
 });

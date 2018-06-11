@@ -23,9 +23,15 @@ class SendyApiModule extends CarrierModule
 
     protected $_hooks = array(
         'actionCarrierUpdate', //For control change of the carrier's ID (id_carrier), the module must use the updateCarrier hook.
+        'actionAdminControllerSetMedia',
+        'actionFrontControllerSetMedia',
+        'displayShoppingCart',
+
     );
 
-    protected $_carriers = array();
+    protected $_carriers = array(
+        'Sendy' => 'Sendy Prestashop Module',
+    );
 
     public function __construct()
     {
@@ -40,10 +46,14 @@ class SendyApiModule extends CarrierModule
 
         $this->displayName = $this->l('Sendy Api Module'); // public name
         $this->description = $this->l('Sendy Prestashop Module for the Sendy public API'); // public description
-
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?'); // confirmation message at uninstall
-
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->initCarriers();
+    }
+
+    private function initCarriers(){
+        $this->_carriers['sendy delivery to office'] = 'sendy_office';
+        $this->_carriers['sendy delivery to door'] = 'sendy_door';
     }
 
     /**
@@ -62,16 +72,16 @@ class SendyApiModule extends CarrierModule
 //
 //
 //    }
-    public function install()
-    {
+    public function install(){
         if (parent::install()) {
+            $this->initConfig();
             foreach ($this->_hooks as $hook) {
                 if (!$this->registerHook($hook)) {
                     return FALSE;
                 }
             }
 
-            if (!$this->createCarriers()) { //function for creating new currier
+            if (!$this->createCarriers()) { //function for creating new carrier
                 return FALSE;
             }
 
@@ -81,12 +91,11 @@ class SendyApiModule extends CarrierModule
         return FALSE;
     }
 
-    protected function createCarriers()
-    {
+    protected function createCarriers(){
         foreach ($this->_carriers as $key => $value) {
             //Create new carrier
             $carrier = new Carrier();
-            $carrier->name = $key;
+            $carrier->name = $this->l($key);
             $carrier->active = TRUE;
             $carrier->deleted = 0;
             $carrier->shipping_handling = FALSE;
@@ -101,8 +110,8 @@ class SendyApiModule extends CarrierModule
                 $groups = Group::getGroups(true);
                 foreach ($groups as $group) {
                     Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_group', array(
-                        'id_carrier' => (int)$carrier->id,
-                        'id_group' => (int)$group['id_group']
+                        'id_carrier' => (int) $carrier->id,
+                        'id_group' => (int) $group['id_group']
                     ), 'INSERT');
                 }
 
@@ -121,14 +130,14 @@ class SendyApiModule extends CarrierModule
                 $zones = Zone::getZones(true);
                 foreach ($zones as $z) {
                     Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_zone',
-                        array('id_carrier' => (int)$carrier->id, 'id_zone' => (int)$z['id_zone']), 'INSERT');
+                        array('id_carrier' => (int) $carrier->id, 'id_zone' => (int) $z['id_zone']), 'INSERT');
                     Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => (int)$rangePrice->id, 'id_range_weight' => NULL, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
+                        array('id_carrier' => $carrier->id, 'id_range_price' => (int) $rangePrice->id, 'id_range_weight' => NULL, 'id_zone' => (int) $z['id_zone'], 'price' => '0'), 'INSERT');
                     Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int)$rangeWeight->id, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
+                        array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int) $rangeWeight->id, 'id_zone' => (int) $z['id_zone'], 'price' => '0'), 'INSERT');
                 }
 
-                copy(dirname(__FILE__) . '/views/img/' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg'); //assign carrier logo
+                copy(dirname(__FILE__) . '/views/img/' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg'); //assign carrier logo
 
                 Configuration::updateValue(self::PREFIX . $value, $carrier->id);
                 Configuration::updateValue(self::PREFIX . $value . '_reference', $carrier->id);
@@ -138,8 +147,7 @@ class SendyApiModule extends CarrierModule
         return TRUE;
     }
 
-    protected function deleteCarriers()
-    {
+    protected function deleteCarriers(){
         foreach ($this->_carriers as $value) {
             $tmp_carrier_id = Configuration::get(self::PREFIX . $value);
             $carrier = new Carrier($tmp_carrier_id);
@@ -160,8 +168,7 @@ class SendyApiModule extends CarrierModule
 //        return Configuration::deleteByName($this->name) &&
 //            parent::uninstall();
 //    }
-    public function uninstall()
-    {
+    public function uninstall(){
         if (parent::uninstall()) {
             foreach ($this->_hooks as $hook) {
                 if (!$this->unregisterHook($hook)) {
@@ -605,7 +612,7 @@ class SendyApiModule extends CarrierModule
     {
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
         $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
-        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js', 'all');
 
     }
 
@@ -633,34 +640,20 @@ class SendyApiModule extends CarrierModule
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
 
-    public function getOrderShippingCost($params, $shipping_cost)
-    {
-        return 777;
+    public function getOrderShippingCost($params, $shipping_cost){
+        return 50;
     }
 
-    public function getOrderShippingCostExternal($params)
-    {
+    public function getOrderShippingCostExternal($params){
         return $this->getOrderShippingCost($params, 0);
     }
 
-    public function hookActionCarrierUpdate($params)
-    {
+    public function hookActionCarrierUpdate($params){
         if ($params['carrier']->id_reference == Configuration::get(self::PREFIX . 'swipbox_reference')) {
             Configuration::updateValue(self::PREFIX . 'swipbox', $params['carrier']->id);
         }
     }
 
-    /*
-       ** Hook update carrier
-       **
-       */
-
-    public function hookupdateCarrier($params)
-    {
-        if ($params['carrier']->id_reference == Configuration::get(self::PREFIX . 'swipbox_reference')) {
-            Configuration::updateValue(self::PREFIX . 'swipbox', $params['carrier']->id);
-        }
-    }
 }
 
 ?>

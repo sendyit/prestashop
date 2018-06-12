@@ -26,14 +26,38 @@
     </div>
 </div>
 <script>
+    function getLink(url) {
+        var loc = window.location.pathname;
+        var dir = loc.substring(0, loc.lastIndexOf('/'));
+        console.log(dir+url);
+        return dir+url;
+    }
     function hideDiv() {
         $(".divHidden").hide('slow');
         $('input[type="text"]').val('');
         $("#submitBtn").css("background-color","#1782c5");
         $("#submitBtn").val('Get a Shipping Price Estimate');
         $("#submitBtn").css("display", "block");
-
     }
     function setShipping(){
+        let url = "/modules/sendyapimodule/custom/setShipping.php";
+        $(".block").hide('slow');
+        var price = document.getElementsByClassName("show-price");
+        for (var i = 0; i < price.length; i++) {
+            var shipping_cost = price[i].innerText;
+        }
+        // alert("Price: " + shippingPrice);
+        let payload = { "shipping_cost":shipping_cost };
+            $.ajax({
+            type: "POST",
+            url: getLink(url),
+            data: payload,
+            dataType: 'json',
+            cache: false,
+            success: function(msg)
+            {
+                console.log(msg);
+            }
+        });
     }
 </script>

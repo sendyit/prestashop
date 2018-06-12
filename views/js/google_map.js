@@ -9,4 +9,4 @@ function dynamicallyLoadScript(url) {
 
 
 
-dynamicallyLoadScript("https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyD5y2Y1zfyWCWDEPRLDBDYuRoJ8ReHYXwY&callback=initMap");
+dynamicallyLoadScript("https://maps.googleapis.com/maps/api/js?&libraries=places&key=AIzaSyD5y2Y1zfyWCWDEPRLDBDYuRoJ8ReHYXwY&callback=initMap");

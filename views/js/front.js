@@ -25,7 +25,6 @@ $(document).ready(function () {
             sendRequest(to_name, to_lat, to_long);
             getLink();
         });
-        
       }
     });
 
@@ -67,7 +66,7 @@ $(document).ready(function () {
     function getLink(url) {
         var loc = window.location.pathname;
         var dir = loc.substring(0, loc.lastIndexOf('/'));
-        console.log(dir+url);
+        //console.log(dir+url);
         return dir+url;
     }
 });

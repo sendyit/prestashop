@@ -97,6 +97,7 @@ class SendyApiModule extends CarrierModule
             $carrier = new Carrier();
             $carrier->name = $this->l($key);
             $carrier->active = TRUE;
+            $carrier->delay = 'On Demand Delivery';
             $carrier->deleted = 0;
             $carrier->shipping_handling = FALSE;
             $carrier->range_behavior = 0;
@@ -104,7 +105,7 @@ class SendyApiModule extends CarrierModule
             $carrier->shipping_external = TRUE;
             $carrier->is_module = TRUE;
             $carrier->external_module_name = $this->name;
-            $carrier->need_range = TRUE;
+            $carrier->need_range = FALSE;
 
             if ($carrier->add()) {
                 $groups = Group::getGroups(true);
@@ -640,8 +641,15 @@ class SendyApiModule extends CarrierModule
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
 
+//    public function getPrice($shipping_price){
+//        return $shipping_price;
+//    }
+
     public function getOrderShippingCost($params, $shipping_cost){
-        return 50;
+        $shipping_cost = $myCart->getPackageShippingCost($cart, $shipping_cost, $products);
+//        include(dirname(__FILE__).' /myCart.php');
+//        $shipping_cost = myCart::getPackageShippingCost();
+        return $shipping_cost;
     }
 
     public function getOrderShippingCostExternal($params){

@@ -29,7 +29,7 @@
     function getLink(url) {
         var loc = window.location.pathname;
         var dir = loc.substring(0, loc.lastIndexOf('/'));
-        console.log(dir+url);
+        // console.log(dir+url);
         return dir+url;
     }
     function hideDiv() {
@@ -46,7 +46,7 @@
         for (var i = 0; i < price.length; i++) {
             var shipping_cost = price[i].innerText;
         }
-        // alert("Price: " + shippingPrice);
+        // console.log(shipping_cost);
         let payload = { "shipping_cost":shipping_cost };
             $.ajax({
             type: "POST",
@@ -59,5 +59,8 @@
                 console.log(msg);
             }
         });
+        // $user_address = new Address(intval($params['cart']->id_address_invoice));
+        // $udf3 = "udf3=".$user_address->phone;
+        // console.log($udf3);
     }
 </script>

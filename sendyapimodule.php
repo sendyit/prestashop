@@ -26,6 +26,7 @@ class SendyApiModule extends CarrierModule
         'actionAdminControllerSetMedia',
         'actionFrontControllerSetMedia',
         'displayShoppingCart',
+        'displayOrderConfirmation',
 
     );
 
@@ -97,7 +98,6 @@ class SendyApiModule extends CarrierModule
             $carrier = new Carrier();
             $carrier->name = $this->l($key);
             $carrier->active = TRUE;
-            $carrier->delay = 'On Demand Delivery';
             $carrier->deleted = 0;
             $carrier->shipping_handling = FALSE;
             $carrier->range_behavior = 0;
@@ -646,7 +646,7 @@ class SendyApiModule extends CarrierModule
 //    }
 
     public function getOrderShippingCost($params, $shipping_cost){
-        $shipping_cost = $myCart->getPackageShippingCost($cart, $shipping_cost, $products);
+//        $shipping_cost = $myCart->getPackageShippingCost($cart, $shipping_cost, $products);
 //        include(dirname(__FILE__).' /myCart.php');
 //        $shipping_cost = myCart::getPackageShippingCost();
         return $shipping_cost;
@@ -660,6 +660,9 @@ class SendyApiModule extends CarrierModule
         if ($params['carrier']->id_reference == Configuration::get(self::PREFIX . 'swipbox_reference')) {
             Configuration::updateValue(self::PREFIX . 'swipbox', $params['carrier']->id);
         }
+    }
+    public function hookDisplayOrderConfirmation($params) {
+        //do whatever
     }
 
 }

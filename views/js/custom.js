@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     $(() => {
       initMap = function() {
-          
+        console.log('initializing maps');
         // put your jQuery code here
         var country = 'ke';
         var options = {componentRestrictions: {country: country}};

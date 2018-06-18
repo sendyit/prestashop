@@ -7,11 +7,8 @@
  */
 include(dirname(__FILE__).'/../../../config/config.inc.php');
 include(_PS_ROOT_DIR_.'/init.php');
-$myCart = Module::getInstanceByName('myCart');
+$sendyapimodule = Module::getInstanceByName('sendyapimodule');
 $data = $_POST;
 $shipping_cost = $data['shipping_cost'];
-#echo $shipping_cost;
-//$params = array("shipping_cost" => $shipping_cost);
-$myCart->getPackageShippingCost($shipping_cost);
-//$res = $sendyapimodule->getShipping($shipping_cost);
-//echo $res;
+$res = $sendyapimodule->showPriceQuote($shipping_cost);
+echo $res;

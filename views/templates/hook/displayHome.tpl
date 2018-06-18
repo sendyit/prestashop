@@ -46,7 +46,7 @@
         for (var i = 0; i < price.length; i++) {
             var shipping_cost = price[i].innerText;
         }
-        // console.log(shipping_cost);
+        console.log(shipping_cost);
         let payload = { "shipping_cost":shipping_cost };
             $.ajax({
             type: "POST",

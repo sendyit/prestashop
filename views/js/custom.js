@@ -2,7 +2,6 @@ var from_name;
 var from_vicinity;
 var from_lat;
 var from_long;
-
 function initMap() {} // now it IS a function and it is in global
 
 $(document).ready(function () {
@@ -11,7 +10,7 @@ $(document).ready(function () {
     $("#api_lat").closest(".form-group").hide();
 
    
-
+    console.log('ready');
     $(() => {
       initMap = function() {
         console.log('initializing maps');
@@ -29,7 +28,7 @@ $(document).ready(function () {
             sendData(from_name, from_lat, from_long);
 
         });
-        
+
       }
     });
 

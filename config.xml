@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
     <name>sendyapimodule</name>
-    <displayName><![CDATA[Sendy Api Module]]></displayName>
+    <displayName><![CDATA[Sendy Ecommerce]]></displayName>
     <version><![CDATA[1.0.0]]></version>
-    <description><![CDATA[Sendy Prestashop Module for the Sendy public API]]></description>
+    <description><![CDATA[This module integrates Sendy delivery service to the customers shopping flow.]]></description>
     <author><![CDATA[Sendy]]></author>
     <tab><![CDATA[shipping_logistics]]></tab>
 	<confirmUninstall><![CDATA[Are you sure you want to uninstall?]]></confirmUninstall>

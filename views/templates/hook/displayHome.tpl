@@ -40,7 +40,7 @@
         $("#submitBtn").css("display", "block");
     }
     function setShipping(){
-        let url = "/override/classes/Cart.php";
+        let url = "/modules/sendyapimodule/custom/setShipping.php";
         $(".block").hide('slow');
         var price = document.getElementsByClassName("show-price");
         for (var i = 0; i < price.length; i++) {
@@ -51,7 +51,13 @@
             $.ajax({
             type: "POST",
             url: getLink(url),
-            data: payload,
+            // data: payload,
+                data: {
+                    // class: 'Cart',
+                    action: 'getPackageShippingCost',
+                    shipping_cost: shipping_cost
+                },
+
             dataType: 'json',
             cache: false,
             success: function(msg)

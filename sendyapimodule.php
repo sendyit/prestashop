@@ -34,15 +34,15 @@ class SendyApiModule extends CarrierModule
         $this->need_instance = 0; // load the module when displaying the "Modules" page in backend
         $this->bootstrap = true;
         parent::__construct();
-        $this->displayName = $this->l('Sendy Api Module'); // public name
-        $this->description = $this->l('Sendy Prestashop Module for the Sendy public API'); // public description
+
+        $this->displayName = $this->l('Sendy Ecommerce'); // public name
+        $this->description = $this->l('This module integrates Sendy delivery service to the customers shopping flow.'); // public description
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?'); // confirmation message at uninstall
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->initCarriers();
     }
     private function initCarriers(){
         $this->_carriers['Sendy'] = 'sendy';
-        $this->_carriers['Econt'] = 'econt2';
     }
     /**
      * Install this module
@@ -589,6 +589,10 @@ class SendyApiModule extends CarrierModule
         $this->smarty->assign($this->config_values);
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
+public function showPriceQuote($shipping_cost){
+        echo $shipping_cost;
+
+}
     public function getOrderShippingCost($params, $shipping_cost){
         return 5;
     }

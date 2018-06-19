@@ -40,7 +40,7 @@
         $("#submitBtn").css("display", "block");
     }
     function setShipping(){
-        let url = "/modules/sendyapimodule/custom/setShipping.php";
+        let url = "/override/classes/Cart.php";
         $(".block").hide('slow');
         var price = document.getElementsByClassName("show-price");
         for (var i = 0; i < price.length; i++) {
@@ -59,8 +59,5 @@
                 console.log(msg);
             }
         });
-        // $user_address = new Address(intval($params['cart']->id_address_invoice));
-        // $udf3 = "udf3=".$user_address->phone;
-        // console.log($udf3);
     }
 </script>

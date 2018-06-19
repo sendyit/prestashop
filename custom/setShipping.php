@@ -20,4 +20,3 @@ $product_list = null;
 $id_zone = null;
 
 echo $sendyapicart->getPackageShippingCost($id_carrier, $use_tax,$default_country, $product_list, $id_zone, $shipping_cost);
-//echo 250;

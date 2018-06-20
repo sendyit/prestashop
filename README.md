@@ -42,7 +42,7 @@ Check the summary of your configuration in the "Summary" tab. Ensure "Enabled" i
 
 Click "Finish" to save.
 
-Your Sendy Ecommerce is now set. Lets Deliver.
+Your Sendy Ecommerce is now set. Lets Deliver!
 
 
 

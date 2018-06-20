@@ -27,7 +27,7 @@ Click on the module's "Configure" link. Pay attention to any warning message tha
 
 
 
-Key in Sendy API Configuration and your shop's location (from) then click save
+Key in Sendy API Configuration and your shop's location details then click save
 
 ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/master/configuration.png)
 

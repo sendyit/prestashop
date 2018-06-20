@@ -1,4 +1,4 @@
-sendyapi
+Sendy Prestashop Module
 
 donwload prestashop here :- https://www.prestashop.com/en
 

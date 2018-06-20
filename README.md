@@ -36,5 +36,7 @@ Still in your back-office, click on the "Shipping" tab. You will find sendy as a
 
 Click on sendy.
 
+![alt text](https://raw.githubusercontent.com/sendyit/prestashop/master/carrier.png)
+
 
 

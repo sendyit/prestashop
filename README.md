@@ -3,6 +3,7 @@ sendyapi
 donwload prestashop here :- https://www.prestashop.com/en
 
 setup the installation
+Upload Sendy prestashop module in prestashop modules.
 
 
 

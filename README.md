@@ -23,7 +23,7 @@ In the row for sendy prestashop module, click the "Install" button.
 Your sendy prestashop module is now installed and should be activated too (green tick).
 
 
-Click on the module's "Configure" link. Pay also attention to any warning message that might be displayed by PrestaShop.
+Click on the module's "Configure" link. Pay attention to any warning message that might be displayed by PrestaShop.
 
 
 

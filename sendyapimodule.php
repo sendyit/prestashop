@@ -455,7 +455,6 @@ class SendyApiModule extends CarrierModule
     public function getPriceQuote($api_to, $to_lat, $to_long, $recepient_name ="Sendy User", $recepient_phone ="0716163362", $recepient_email ="ndervine@sendy.co.ke")
     {
         $this->config_values = $this->getConfigValues();
-
         $api_key = $this->config_values['sendy_api_key'];
         $api_username = $this->config_values['sendy_api_username'];
         $env = $this->config_values['api_enviroment'];
@@ -480,7 +479,7 @@ class SendyApiModule extends CarrierModule
                         "recepient": {
                           "recepient_name": "' . $recepient_name . '",
                           "recepient_phone": "' . $recepient_phone . '",
-                          "recepient_email": "' . $recepient_name . '"
+                          "recepient_email": "' . $recepient_email . '"
                         },
                         "delivery_details": {
                           "pick_up_date": "2016-04-20 12:12:12",

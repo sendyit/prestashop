@@ -9,6 +9,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
 class SendyApiModule extends CarrierModule
 {
     const PREFIX = 'ps_';
@@ -25,6 +26,7 @@ class SendyApiModule extends CarrierModule
         'actionCarrierUpdate',
     );
     protected $_carriers = array();
+
     public function __construct()
     {
         $this->name = 'sendyapimodule'; // internal identifier, unique and lowercase
@@ -41,7 +43,9 @@ class SendyApiModule extends CarrierModule
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->initCarriers();
     }
-    private function initCarriers(){
+
+    private function initCarriers()
+    {
         $this->_carriers['Sendy'] = 'sendy';
     }
     /**
@@ -65,7 +69,8 @@ class SendyApiModule extends CarrierModule
 //
 //        return TRUE;
 //    }
-    public function install(){
+    public function install()
+    {
         if (parent::install()) {
             foreach ($this->_hooks as $hook) {
                 if (!$this->registerHook($hook)) {
@@ -82,7 +87,9 @@ class SendyApiModule extends CarrierModule
 
         return FALSE;
     }
-    protected function createCarriers(){
+
+    protected function createCarriers()
+    {
         foreach ($this->_carriers as $key => $value) {
             //Create new carrier
             $carrier = new Carrier();
@@ -101,8 +108,8 @@ class SendyApiModule extends CarrierModule
                 $groups = Group::getGroups(true);
                 foreach ($groups as $group) {
                     Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_group', array(
-                        'id_carrier' => (int) $carrier->id,
-                        'id_group' => (int) $group['id_group']
+                        'id_carrier' => (int)$carrier->id,
+                        'id_group' => (int)$group['id_group']
                     ), 'INSERT');
                 }
 
@@ -121,14 +128,14 @@ class SendyApiModule extends CarrierModule
                 $zones = Zone::getZones(true);
                 foreach ($zones as $z) {
                     Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_zone',
-                        array('id_carrier' => (int) $carrier->id, 'id_zone' => (int) $z['id_zone']), 'INSERT');
+                        array('id_carrier' => (int)$carrier->id, 'id_zone' => (int)$z['id_zone']), 'INSERT');
                     Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => (int) $rangePrice->id, 'id_range_weight' => NULL, 'id_zone' => (int) $z['id_zone'], 'price' => '0'), 'INSERT');
+                        array('id_carrier' => $carrier->id, 'id_range_price' => (int)$rangePrice->id, 'id_range_weight' => NULL, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
                     Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int) $rangeWeight->id, 'id_zone' => (int) $z['id_zone'], 'price' => '0'), 'INSERT');
+                        array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int)$rangeWeight->id, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
                 }
 
-                copy(dirname(__FILE__) . '/views/img/' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg'); //assign carrier logo
+                copy(dirname(__FILE__) . '/views/img/' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg'); //assign carrier logo
 
                 Configuration::updateValue(self::PREFIX . $value, $carrier->id);
                 Configuration::updateValue(self::PREFIX . $value . '_reference', $carrier->id);
@@ -138,7 +145,8 @@ class SendyApiModule extends CarrierModule
         return TRUE;
     }
 
-    protected function deleteCarriers(){
+    protected function deleteCarriers()
+    {
         foreach ($this->_carriers as $value) {
             $tmp_carrier_id = Configuration::get(self::PREFIX . $value);
             $carrier = new Carrier($tmp_carrier_id);
@@ -163,7 +171,8 @@ class SendyApiModule extends CarrierModule
 //
 //        return TRUE;
 //    }
-    public function uninstall(){
+    public function uninstall()
+    {
         if (parent::uninstall()) {
             foreach ($this->_hooks as $hook) {
                 if (!$this->unregisterHook($hook)) {
@@ -180,6 +189,7 @@ class SendyApiModule extends CarrierModule
 
         return FALSE;
     }
+
     /**
      * Add the CSS & JavaScript files you want to be loaded in BO.
      */
@@ -189,6 +199,7 @@ class SendyApiModule extends CarrierModule
         $this->context->controller->addCSS($this->getPathUri() . 'views/css/custom.css');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
     }
+
     /**
      * Set the default configuration
      * @return boolean
@@ -201,7 +212,7 @@ class SendyApiModule extends CarrierModule
             'sendy_api_username' => 'mysendyusername',
             'api_enviroment' => 'sandbox',
             'api_from' => 'MarsaBit Plaza, Ngong Road, Nairobi, Kenya', #get current location here
-            'api_lat'=> '-1.299897',
+            'api_lat' => '-1.299897',
             'api_long' => '36.77305249999995',
             'api_building' => 'Marsabit Plaza',  #try to prefill with location
             'api_floor' => '3', #leave blank
@@ -209,6 +220,7 @@ class SendyApiModule extends CarrierModule
         );
         return $this->setConfigValues($this->config_values);
     }
+
     /**
      * Configuration page
      */
@@ -225,6 +237,7 @@ class SendyApiModule extends CarrierModule
         ));
         return $this->postProcess();
     }
+
     /**
      * Save form data.
      */
@@ -239,7 +252,7 @@ class SendyApiModule extends CarrierModule
                     'sendy_api_username' => 'mysendyusername',
                     'api_enviroment' => 'sandbox',
                     'api_from' => 'MarsaBit Plaza, Ngong Road, Nairobi, Kenya', #get current location here
-                    'api_lat'=> '-1.299897',
+                    'api_lat' => '-1.299897',
                     'api_long' => '36.77305249999995',
                     'api_building' => 'Marsabit Plaza',  #try to prefill with location
                     'api_floor' => '3', #leave blank
@@ -278,6 +291,7 @@ class SendyApiModule extends CarrierModule
         }
         return $output;
     }
+
     /**
      * Create the structure ob_flush() your form.
      */
@@ -369,6 +383,7 @@ class SendyApiModule extends CarrierModule
             )
         );
     }
+
     /**
      * Create the form that will be displayed in the configuration of your module.
      */
@@ -390,6 +405,7 @@ class SendyApiModule extends CarrierModule
         );
         return $helper->generateForm(array($this->getConfigForm()));
     }
+
     /**
      * Get configuration array from database
      * @return array
@@ -398,6 +414,7 @@ class SendyApiModule extends CarrierModule
     {
         return json_decode(Configuration::get($this->name), true);
     }
+
     public function connectSendyApi($api_key, $api_username, $env = 'sandbox')
     {
         $request = '{
@@ -428,6 +445,7 @@ class SendyApiModule extends CarrierModule
         # Print response.
         return $result;
     }
+
     /**
      * perform a price request
      * set 'from' as store's location
@@ -435,8 +453,9 @@ class SendyApiModule extends CarrierModule
      * return a price quote
      */
     public function getPriceQuote($api_to, $to_lat, $to_long)
-    {   $this->config_values = $this->getConfigValues();
-        
+    {
+        $this->config_values = $this->getConfigValues();
+
         $api_key = $this->config_values['sendy_api_key'];
         $api_username = $this->config_values['sendy_api_username'];
         $env = $this->config_values['api_enviroment'];
@@ -447,15 +466,15 @@ class SendyApiModule extends CarrierModule
                         "api_username": "' . $api_username . '",
                         "vendor_type": 1,
                         "from": {
-                          "from_name": "'.$this->config_values['api_from'].'",
-                          "from_lat": "'.$this->config_values['api_lat'].'",
-                          "from_long":"'.$this->config_values['api_long'].'",
+                          "from_name": "' . $this->config_values['api_from'] . '",
+                          "from_lat": "' . $this->config_values['api_lat'] . '",
+                          "from_long":"' . $this->config_values['api_long'] . '",
                           "from_description": ""
                         },
                         "to": {
-                          "to_name": "'.$api_to.'",
-                          "to_lat": "'.$to_lat.'",
-                          "to_long": "'.$to_long.'",
+                          "to_name": "' . $api_to . '",
+                          "to_lat": "' . $to_lat . '",
+                          "to_long": "' . $to_long . '",
                           "to_description": ""
                         },
                         "recepient": {
@@ -473,7 +492,7 @@ class SendyApiModule extends CarrierModule
                           "return": true,
                           "note": " Sample note",
                           "note_status": true,
-                          "request_type": "delivery",
+                          "request_type": "quote",
                           "order_type": "ondemand_delivery",
                           "ecommerce_order": "ecommerce_order_001",
                           "skew": 1,
@@ -506,8 +525,11 @@ class SendyApiModule extends CarrierModule
         $result = curl_exec($ch);
         curl_close($ch);
         # Print response.
+        $context = Context::getContext();
+        $context->cookie->__set('price_request_data',json_encode($result));
         return $result;
     }
+
     /**
      * Set configuration array to database
      * @param array $config
@@ -524,13 +546,16 @@ class SendyApiModule extends CarrierModule
         }
         return false;
     }
-    public function updateFromConfig($api_from, $api_lat, $api_long){
+
+    public function updateFromConfig($api_from, $api_lat, $api_long)
+    {
         $config = $this->getConfigValues();
         $config['api_from'] = $api_from;
         $config['api_lat'] = $api_lat;
         $config['api_long'] = $api_long;
         $this->setConfigValues($config);
     }
+
     /**
      * Get the action submitted from the configuration page
      * @return string
@@ -544,6 +569,7 @@ class SendyApiModule extends CarrierModule
         }
         return false;
     }
+
     /**
      * Determines if on the module configuration page
      * @return bool
@@ -552,6 +578,7 @@ class SendyApiModule extends CarrierModule
     {
         return self::isAdminPage('modules') && Tools::getValue('configure') === $this->name;
     }
+
     /**
      * Determines if on the specified admin page
      * @param string $page
@@ -561,16 +588,19 @@ class SendyApiModule extends CarrierModule
     {
         return Tools::getValue('controller') === 'Admin' . ucfirst($page);
     }
+
     public function hookDisplayBackOfficeHeader($params)
     {
         $this->hookBackOfficeHeader($params);
     }
+
     public function hookBackOfficeHeader($params)
     {
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
         $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
     }
+
     /**
      * Add the CSS & JavaScript files on FO.
      */
@@ -580,6 +610,7 @@ class SendyApiModule extends CarrierModule
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
     }
+
     /**
      * cartPage content hook (Technical name: displayHome)
      */
@@ -591,26 +622,75 @@ class SendyApiModule extends CarrierModule
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
 
-    public function getOrderShippingCost($params, $shipping_cost){
+    public function getOrderShippingCost($params, $shipping_cost)
+    {
         return $shipping_cost;
     }
 
-    public function getOrderShippingCostExternal($params){
+    public function getOrderShippingCostExternal($params)
+    {
         return $this->getOrderShippingCost($params, 0);
     }
-    public function hookActionCarrierUpdate($params){
+
+    public function hookActionCarrierUpdate($params)
+    {
         if ($params['carrier']->id_reference == Configuration::get(self::PREFIX . 'swipbox_reference')) {
             Configuration::updateValue(self::PREFIX . 'swipbox', $params['carrier']->id);
         }
     }
-//    public function getOrderShippingCost($params, $shipping_cost)
-//    {
-//        if (Context::getContext()->customer->logged == true)
-//        {
-//            $id_address_delivery = Context::getContext()->cart->id_address_delivery;
-//            $address = new Address($id_address_delivery);
-//            return 100; // i want to return `$shipping_cost`
-//        }
-//        return $shipping_cost;
-//    }
+
+    public function completeOrder()
+    {
+        $context = Context::getContext();
+        $price_request_data = $context->cookie->price_request_data;
+        $price_request_data = json_decode(json_decode($price_request_data), true);
+        //return json_encode($price_request_data);
+        $order_no = $price_request_data['data']['order_no'];
+        $amount = $price_request_data['data']['amount'];
+        $this->config_values = $this->getConfigValues();
+        //return json_encode($this->config_values);
+        $api_key = $this->config_values['sendy_api_key'];
+        $api_username = $this->config_values['sendy_api_username'];
+        $env = $this->config_values['api_enviroment'];
+        $request = '{
+                      "command": "complete",
+                      "data": {
+                        "api_key": "' . $api_key . '",
+                        "api_username": "' . $api_username . '",
+                        "order_no": "' . $order_no . '",
+                        "delivery_details": {
+                          "pick_up_date": "'.date("Y-m-d H:i:s") .'",
+                          "collect_payment": {
+                            "status": false,
+                            "pay_method": 0,
+                            "amount": "' . $amount . '"
+                          },
+                          "return": false,
+                          "note": " Sample note",
+                          "note_status": true
+                        }
+                      },
+                      "request_token_id": "request_token_id"
+                    }';
+        if ($env == 'sandbox') {
+            $url = 'https://apitest.sendyit.com/v1/#request';
+        } else {
+            $url = 'https://api.sendyit.com/v1/#request';
+        }
+        $ch = curl_init($url);
+        # Setup request to send json via POST.
+        $payload = json_encode(json_decode($request, true));
+        // $payload = $request;
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        # Print response.
+        return $result;
+    }
+
 }

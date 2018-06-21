@@ -452,7 +452,7 @@ class SendyApiModule extends CarrierModule
      * 'to' to be set by customer during checkout
      * return a price quote
      */
-    public function getPriceQuote($api_to, $to_lat, $to_long)
+    public function getPriceQuote($api_to, $to_lat, $to_long, $recepient_name ="Sendy User", $recepient_phone ="0716163362", $recepient_email ="ndervine@sendy.co.ke")
     {
         $this->config_values = $this->getConfigValues();
 
@@ -478,9 +478,9 @@ class SendyApiModule extends CarrierModule
                           "to_description": ""
                         },
                         "recepient": {
-                          "recepient_name": "Sendy User",
-                          "recepient_phone": "0728561783",
-                          "recepient_email": "support@sendy.co.ke"
+                          "recepient_name": "' . $recepient_name . '",
+                          "recepient_phone": "' . $recepient_phone . '",
+                          "recepient_email": "' . $recepient_name . '"
                         },
                         "delivery_details": {
                           "pick_up_date": "2016-04-20 12:12:12",
@@ -692,5 +692,4 @@ class SendyApiModule extends CarrierModule
         # Print response.
         return $result;
     }
-
 }

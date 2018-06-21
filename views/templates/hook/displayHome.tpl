@@ -16,7 +16,7 @@
                 <div class="show-price" >240</div>
                 <div>
                 <input class="btnContinue" id="continue" onclick="setShipping()" type="submit" value="Continue">
-                <input class="btnCancel" id="cancel" onclick="hideDiv()" type="submit" value="Cancel">
+                <input class="btnCancel" id="cancel" onclick="hideDiv()" type="submit" value="Reset">
                 </div>
             </div>
             <div>

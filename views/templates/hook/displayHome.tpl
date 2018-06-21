@@ -63,6 +63,7 @@
             success: function(msg)
             {
                 console.log(msg);
+                location.reload(true);
             }
         });
     }

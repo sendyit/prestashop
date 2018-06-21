@@ -98,13 +98,11 @@ class SendyApiModule extends CarrierModule
             $carrier->deleted = 0;
             $carrier->shipping_handling = FALSE;
             $carrier->range_behavior = 0;
-            $this->limited_countries =  'ke';
-            $carrier->delay  = 'On Demand Delivery';
-            //$carrier->delay[Configuration::get('PS_LANG_DEFAULT')] = $key;
+            $carrier->delay[Configuration::get('PS_LANG_DEFAULT')] = 'On Demand Delivery';
             $carrier->shipping_external = TRUE;
             $carrier->is_module = TRUE;
             $carrier->external_module_name = $this->name;
-            $carrier->need_range = TRUE;
+            $carrier->need_range = FALSE;
 
             if ($carrier->add()) {
                 $groups = Group::getGroups(true);
@@ -137,7 +135,7 @@ class SendyApiModule extends CarrierModule
                         array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int)$rangeWeight->id, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
                 }
 
-                copy(dirname(__FILE__) . '/views/img/logo.png', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg'); //assign carrier logo
+                copy(dirname(__FILE__) . '/views/img/logo.png', _PS_ROOT_DIR_. '/img/s/' . (int)$carrier->id . '.jpg'); //assign carrier logo
 
                 Configuration::updateValue(self::PREFIX . $value, $carrier->id);
                 Configuration::updateValue(self::PREFIX . $value . '_reference', $carrier->id);

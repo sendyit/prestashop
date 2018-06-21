@@ -238,12 +238,12 @@ class SendyApiModule extends CarrierModule
                     'sendy_api_key' => 'mysendykey',
                     'sendy_api_username' => 'mysendyusername',
                     'api_enviroment' => 'sandbox',
-                    'api_from' => '', #get current location here
-                    'api_lat'=> '',
-                    'api_long' => '',
-                    'api_building' => '',  #try to prefill with location
-                    'api_floor' => '', #leave blank
-                    'other_details' => '' #other details
+                    'api_from' => 'MarsaBit Plaza, Ngong Road, Nairobi, Kenya', #get current location here
+                    'api_lat'=> '-1.299897',
+                    'api_long' => '36.77305249999995',
+                    'api_building' => 'Marsabit Plaza',  #try to prefill with location
+                    'api_floor' => '3', #leave blank
+                    'other_details' => 'room 307' #other details
                 );
                 $config_keys = array_keys($this->config_values);
                 foreach ($config_keys as $key) {
@@ -436,6 +436,7 @@ class SendyApiModule extends CarrierModule
      */
     public function getPriceQuote($api_to, $to_lat, $to_long)
     {   $this->config_values = $this->getConfigValues();
+        
         $api_key = $this->config_values['sendy_api_key'];
         $api_username = $this->config_values['sendy_api_username'];
         $env = $this->config_values['api_enviroment'];
@@ -589,12 +590,9 @@ class SendyApiModule extends CarrierModule
         $this->smarty->assign($this->config_values);
         return $this->display(__FILE__, $params['tpl'] . '.tpl');
     }
-public function showPriceQuote($shipping_cost){
-        echo $shipping_cost;
 
-}
     public function getOrderShippingCost($params, $shipping_cost){
-        return 5;
+        return $shipping_cost;
     }
 
     public function getOrderShippingCostExternal($params){

@@ -9,7 +9,7 @@
             <div class="loader"></div>
             <div id="pricing" style="display: none; color: #1782c5;" class="divHidden">
                 <div class="imagey" >
-                    <img class="image-direct" src="{$base_dir}modules/sendyapimodule/views/img/direct.png" >
+                    <img class="image-direct" src="{$urls.base_url}modules/sendyapimodule/views/img/direct.png" >
                 </div>
                 <div class="show-type" >Direct</div>
                 <div class="show-currency" >KES</div>

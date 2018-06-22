@@ -14,8 +14,8 @@ class OrderConfirmationController extends OrderConfirmationControllerCore
 
     public function completeOrder(){
         $sendyapimodule = Module::getInstanceByName('sendyapimodule');
-        $res = $sendyapimodule->completeOrder();
-        echo $res;
+        $sendyapimodule->completeOrder();
+        //echo $res;
     }
 
     public function displayOrderConfirmation($order)
@@ -37,7 +37,7 @@ class OrderConfirmationController extends OrderConfirmationControllerCore
         $to_long = $to_details['to_long']; 
 
         $res = $sendyapimodule->getPriceQuote($api_to, $to_lat, $to_long, $customer_name, $customer_phone, $customer_mail);
-        echo $res;
+        //echo $res;
         $this->completeOrder();
         return Hook::exec('displayOrderConfirmation', array('order' => $order));
     }

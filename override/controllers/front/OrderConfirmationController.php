@@ -29,9 +29,12 @@ class OrderConfirmationController extends OrderConfirmationControllerCore
         $customer_phone = $address->phone;
         $customer_mail = $customer->email;
 
-        $api_to = null;
-        $to_lat = null;
-        $to_long = null;
+        $context = Context::getContext();
+        $to_details_cookie = $context->cookie->to_details;
+        $to_details = json_decode($to_details_cookie, true);
+        $api_to = $to_details['to_name'];
+        $to_lat = $to_details['to_lat'];
+        $to_long = $to_details['to_long']; 
 
         $res = $sendyapimodule->getPriceQuote($api_to, $to_lat, $to_long, $customer_name, $customer_phone, $customer_mail);
         echo $res;

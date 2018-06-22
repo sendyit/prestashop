@@ -24,5 +24,7 @@ This module integrates Sendy delivery service to the customers shopping flow
  - In the next tab, "Size, weight and Group Access", check all for "Group Access".
  - Check the summary of your configuration in the "Summary" tab. Ensure "Enabled" is set to "YES" so that sendy can be available to your customers as a carrier.
  - Click "Finish" to save.
+ 
+ ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/master/carrier.png)
 
 Your Sendy Ecommerce is now set. Lets Deliver!

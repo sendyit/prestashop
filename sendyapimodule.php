@@ -135,7 +135,7 @@ class SendyApiModule extends CarrierModule
                         array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int)$rangeWeight->id, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
                 }
 
-                copy(dirname(__FILE__) . '/views/img/logo.png' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg'); //assign carrier logo
+                copy(dirname(__FILE__) . '/logo.png' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg'); //assign carrier logo
 
 
                 Configuration::updateValue(self::PREFIX . $value, $carrier->id);
@@ -639,7 +639,7 @@ class SendyApiModule extends CarrierModule
         }
     }
 
-    public function completeOrder()
+    public function completeOrder($notes = 'Sample note1')
     {
         $context = Context::getContext();
         $price_request_data = $context->cookie->price_request_data;
@@ -666,7 +666,7 @@ class SendyApiModule extends CarrierModule
                             "amount": "' . $amount . '"
                           },
                           "return": false,
-                          "note": " Sample note",
+                          "note": "' . $notes . '",
                           "note_status": true
                         }
                       },

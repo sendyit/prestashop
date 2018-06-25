@@ -28,6 +28,19 @@ $(document).ready(function () {
       }
     });
 
+    setPhoneRequired();
+
+    function setPhoneRequired() {
+        console.log('making phone required');
+        $('input[name=phone]').prop('required',true);
+        $('input[name=phone]').parents(".form-group").find(".form-control-comment").html('');
+    }
+
+    function setDeliveryMessage() {
+        $('label[for=delivery_message]').html('Include more information i.e (building, room) or extra details about your order below.');
+    }
+    setDeliveryMessage();
+
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;
         var to_lat = to_lat;

@@ -5,6 +5,8 @@ This module integrates Sendy delivery service to the customers shopping flow
 ## Prestashop Installation
  - Download prestashop here :- https://www.prestashop.com/en
  - Setup the installation
+ 
+ NB: Sendy Ecommerce is compatible with Prestashop versions 1.6 and above
 
 ## Sendy Ecommerce Prestashop plugin Installation
  - Unzip (decompress) sendy ecommerce archive file (.zip).

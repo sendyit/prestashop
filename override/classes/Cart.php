@@ -1,4 +1,30 @@
 <?php
+/**
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This file is licenced under the Software License Agreement.
+
+ * With the purchase or the installation of the software in your application
+
+ * you accept the licence agreement.
+
+ *
+
+ * You must not modify, adapt or create derivative works of this source code
+
+ *
+
+ *  @author    Dervine N
+
+ *  @copyright Sendy Limited
+
+ *  @license   LICENSE.txt
+
+ */
+
 class Cart extends CartCore
 {
     /*
@@ -6,9 +32,10 @@ class Cart extends CartCore
     * date: 2018-06-19 00:34:52
     * version: 1.0.0
     */
-    public function setShippingCost($shipping_cost){
-    	$context = Context::getContext();
-		$context->cookie->__set('shipping_cost',$shipping_cost);
+    public function setShippingCost($shipping_cost)
+    {
+        $context = Context::getContext();
+        $context->cookie->__set('shipping_cost', $shipping_cost);
     }
     
     public function getPackageShippingCost($id_carrier = null, $use_tax = true, Country $default_country = null, $product_list = null, $id_zone = null)
@@ -16,7 +43,7 @@ class Cart extends CartCore
         $context = Context::getContext();
         $shipping_cost_cookie = $context->cookie->shipping_cost;
 
-        if(isset($shipping_cost_cookie) && $shipping_cost_cookie !== null ){
+        if (isset($shipping_cost_cookie) && $shipping_cost_cookie !== null) {
             return $shipping_cost_cookie;
         }
   
@@ -155,6 +182,7 @@ class Cart extends CartCore
                 } else {
                     $shipping = $carrier->getDeliveryPriceByPrice($order_total, (int)$id_zone, (int)$this->id_currency);
                 }
+                $min_shipping_price = null;
 
                 if (!isset($min_shipping_price)) {
                     $min_shipping_price = $shipping;

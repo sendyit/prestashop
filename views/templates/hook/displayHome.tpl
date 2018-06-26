@@ -1,3 +1,29 @@
+{*
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This file is licenced under the Software License Agreement.
+
+ * With the purchase or the installation of the software in your application
+
+ * you accept the licence agreement.
+
+ *
+
+ * You must not modify, adapt or create derivative works of this source code
+
+ *
+
+ *  @author    Dervine N
+
+ *  @copyright Sendy Limited
+
+ *  @license   LICENSE.txt
+
+ *}
+
 <div id="sendyapimodule" class="block">
     {*<p class="title_block">{l s='Sendy API Module' mod='sendyapimodule1'}</p>*}
     <div class="block_content">
@@ -9,7 +35,7 @@
             <div class="loader"></div>
             <div id="pricing" style="display: none; color: #1782c5" class="divHidden">
                 <div class="imagey" >
-                    <img class="image-direct" src="{$urls.base_url}modules/sendyapimodule/views/img/direct.png" >
+                    <img class="image-direct" src="{$urls.base_url|escape:'htmlall':'UTF-8'}modules/sendyapimodule/views/img/direct.png" >
                 </div>
                 <div class="show-type" >Direct</div>
                 <div class="show-currency" >KES</div>

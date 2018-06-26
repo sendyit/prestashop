@@ -1,11 +1,30 @@
 <?php
 /**
- * Sendy API Module
+
+ * NOTICE OF LICENSE
+
  *
- * @author    Griffin M
- * @copyright Sendy
+
+ * This file is licenced under the Software License Agreement.
+
+ * With the purchase or the installation of the software in your application
+
+ * you accept the licence agreement.
+
  *
+
+ * You must not modify, adapt or create derivative works of this source code
+
+ *
+
+ *  @author    Dervine N
+
+ *  @copyright Sendy Limited
+
+ *  @license   LICENSE.txt
+
  */
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -74,18 +93,18 @@ class SendyApiModule extends CarrierModule
         if (parent::install()) {
             foreach ($this->_hooks as $hook) {
                 if (!$this->registerHook($hook)) {
-                    return FALSE;
+                    return false;
                 }
             }
 
             if (!$this->createCarriers()) { //function for creating new currier
-                return FALSE;
+                return false;
             }
 
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     protected function createCarriers()
@@ -94,15 +113,15 @@ class SendyApiModule extends CarrierModule
             //Create new carrier
             $carrier = new Carrier();
             $carrier->name = $this->l($key);
-            $carrier->active = TRUE;
+            $carrier->active = true;
             $carrier->deleted = 0;
-            $carrier->shipping_handling = FALSE;
+            $carrier->shipping_handling = false;
             $carrier->range_behavior = 0;
             $carrier->delay[Configuration::get('PS_LANG_DEFAULT')] = 'On Demand Delivery';
-            $carrier->shipping_external = TRUE;
-            $carrier->is_module = TRUE;
+            $carrier->shipping_external = true;
+            $carrier->is_module = true;
             $carrier->external_module_name = $this->name;
-            $carrier->need_range = TRUE;
+            $carrier->need_range = true;
 
             if ($carrier->add()) {
                 $groups = Group::getGroups(true);
@@ -127,12 +146,30 @@ class SendyApiModule extends CarrierModule
 
                 $zones = Zone::getZones(true);
                 foreach ($zones as $z) {
-                    Db::getInstance()->autoExecute(_DB_PREFIX_ . 'carrier_zone',
-                        array('id_carrier' => (int)$carrier->id, 'id_zone' => (int)$z['id_zone']), 'INSERT');
-                    Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => (int)$rangePrice->id, 'id_range_weight' => NULL, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
-                    Db::getInstance()->autoExecuteWithNullValues(_DB_PREFIX_ . 'delivery',
-                        array('id_carrier' => $carrier->id, 'id_range_price' => NULL, 'id_range_weight' => (int)$rangeWeight->id, 'id_zone' => (int)$z['id_zone'], 'price' => '0'), 'INSERT');
+                    Db::getInstance()->autoExecute(
+                        _DB_PREFIX_ . 'carrier_zone',
+                        array('id_carrier' => (int)$carrier->id,
+                              'id_zone' => (int)$z['id_zone']),
+                        'INSERT'
+                    );
+                    Db::getInstance()->autoExecuteWithNullValues(
+                        _DB_PREFIX_ . 'delivery',
+                        array('id_carrier' => $carrier->id,
+                              'id_range_price' => (int)$rangePrice->id,
+                              'id_range_weight' => null,
+                              'id_zone' => (int)$z['id_zone'],
+                              'price' => '0'),
+                        'INSERT'
+                    );
+                    Db::getInstance()->autoExecuteWithNullValues(
+                        _DB_PREFIX_ . 'delivery',
+                        array('id_carrier' => $carrier->id,
+                              'id_range_price' => null,
+                              'id_range_weight' => (int)$rangeWeight->id,
+                              'id_zone' => (int)$z['id_zone'],
+                              'price' => '0'),
+                        'INSERT'
+                    );
                 }
 
                 copy(dirname(__FILE__) . '/logo.png' . $value . '.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int) $carrier->id . '.jpg'); //assign carrier logo
@@ -143,7 +180,7 @@ class SendyApiModule extends CarrierModule
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     protected function deleteCarriers()
@@ -154,7 +191,7 @@ class SendyApiModule extends CarrierModule
             $carrier->delete();
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -177,18 +214,18 @@ class SendyApiModule extends CarrierModule
         if (parent::uninstall()) {
             foreach ($this->_hooks as $hook) {
                 if (!$this->unregisterHook($hook)) {
-                    return FALSE;
+                    return false;
                 }
             }
 
             if (!$this->deleteCarriers()) {
-                return FALSE;
+                return false;
             }
 
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -453,7 +490,7 @@ class SendyApiModule extends CarrierModule
      * 'to' to be set by customer during checkout
      * return a price quote
      */
-    public function getPriceQuote($api_to, $to_lat, $to_long, $recepient_name ="Sendy User", $recepient_phone ="0716163362", $recepient_email ="ndervine@sendy.co.ke")
+    public function getPriceQuote($api_to, $to_lat, $to_long, $recepient_name = "Sendy User", $recepient_phone = "0716163362", $recepient_email = "ndervine@sendy.co.ke")
     {
         $this->config_values = $this->getConfigValues();
         $api_key = $this->config_values['sendy_api_key'];
@@ -526,7 +563,7 @@ class SendyApiModule extends CarrierModule
         curl_close($ch);
         # Print response.
         $context = Context::getContext();
-        $context->cookie->__set('price_request_data',json_encode($result));
+        $context->cookie->__set('price_request_data', json_encode($result));
         return $result;
     }
 
@@ -586,7 +623,7 @@ class SendyApiModule extends CarrierModule
      */
     public static function isAdminPage($page)
     {
-        return Tools::getValue('controller') === 'Admin' . ucfirst($page);
+        return Tools::getValue('controller') === 'Admin' . Tools::ucfirst($page);
     }
 
     public function hookDisplayBackOfficeHeader($params)

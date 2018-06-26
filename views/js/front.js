@@ -1,3 +1,29 @@
+/**
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This file is licenced under the Software License Agreement.
+
+ * With the purchase or the installation of the software in your application
+
+ * you accept the licence agreement.
+
+ *
+
+ * You must not modify, adapt or create derivative works of this source code
+
+ *
+
+ *  @author    Dervine N
+
+ *  @copyright Sendy Limited
+
+ *  @license   LICENSE.txt
+
+ */
+
 var to_name;
 var to_vicinity;
 var to_lat;

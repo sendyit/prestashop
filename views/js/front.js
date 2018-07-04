@@ -64,6 +64,9 @@ $(document).ready(function () {
 
     function setDeliveryMessage() {
         $('label[for=delivery_message]').html('Include more information i.e (building, room) or extra details about your order below.');
+        $('#delivery_message').attr("placeholder", "Max 300 characters");
+        $('#delivery_message').css("font-size", "12px");
+        $('#delivery_message').attr('maxlength','300');
     }
     setDeliveryMessage();
 
@@ -94,6 +97,7 @@ $(document).ready(function () {
                 $('.divHidden').show();
                 $(".show-price").text(price);
                 $("#submitBtn").css("display", "none");
+                setShipping(price);
             }
         })
             .fail(function (er) {
@@ -107,6 +111,26 @@ $(document).ready(function () {
         var dir = loc.substring(0, loc.lastIndexOf('/'));
         //console.log(dir+url);
         return dir+url;
+    }
+    function setShipping(price){
+        let url = "/modules/sendyapimodule/custom/setShipping.php";
+        $.ajax({
+            type: "POST",
+            url: getLink(url),
+            data: {
+                action: 'getPackageShippingCost',
+                shipping_cost: price
+            },
+
+            dataType: 'json',
+            cache: false,
+            success: function(msg)
+            {
+                console.log(msg);
+                location.reload(true);
+                $('#api_to').attr("placeholder", "Some New Text 1");
+            }
+        });
     }
 
 });

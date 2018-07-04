@@ -52,6 +52,7 @@ class SendyApiModule extends CarrierModule
         $this->tab = 'shipping_logistics'; // backend module coresponding category
         $this->version = '1.0.0'; // version number for the module
         $this->author = 'Sendy'; // module author
+        $this->module_key = '1fe8081ab6f83eea15bfd7c2a0a14741';
         $this->need_instance = 0; // load the module when displaying the "Modules" page in backend
         $this->bootstrap = true;
         parent::__construct();
@@ -117,7 +118,7 @@ class SendyApiModule extends CarrierModule
             $carrier->deleted = 0;
             $carrier->shipping_handling = false;
             $carrier->range_behavior = 0;
-            $carrier->delay[Configuration::get('PS_LANG_DEFAULT')] = 'On Demand Delivery';
+            $carrier->delay[Configuration::get('PS_LANG_DEFAULT')] = 'Same Day Delivery';
             $carrier->shipping_external = true;
             $carrier->is_module = true;
             $carrier->external_module_name = $this->name;

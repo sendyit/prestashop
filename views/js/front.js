@@ -128,9 +128,10 @@ $(document).ready(function () {
             {
                 console.log(msg);
                 location.reload(true);
-                $('#api_to').attr("placeholder", "Some New Text 1");
+                $('#api_to').attr("placeholder", "Change destination");
             }
         });
+
     }
 
 });

@@ -27,21 +27,18 @@
 
 include(dirname(__FILE__).'/../../../config/config.inc.php');
 include(_PS_ROOT_DIR_.'/init.php');
-$sendyapimodule = Module::getInstanceByName('sendyapimodule');
+require_once _PS_ROOT_DIR_ . '/override/classes/Cart.php';
+
+$sendyapicart = new Cart();
+
 $data = $_POST;
-$to_name = $data['to_name'];
-$to_lat = $data['to_lat'];
-$to_long = $data['to_long'];
+$shipping_cost = $data['shipping_cost'];
+$id_carrier = null;
+$use_tax = true;
+$default_country = null;
+$product_list = null;
+$id_zone = null;
 
-#store to details in a cookie
-$to_details = array(
-    "to_name" => $to_name,
-    "to_lat" => $to_lat,
-    "to_long" => $to_long
-);
+$sendyapicart->setShippingCost($shipping_cost);
 
-$context = Context::getContext();
-$context->cookie->__set('to_details', json_encode($to_details));
-
-$res = $sendyapimodule->getPriceQuote($to_name, $to_lat, $to_long);
-echo $res;
+echo $sendyapicart->getPackageShippingCost($id_carrier, $use_tax, $default_country, $product_list, $id_zone, $shipping_cost);

@@ -1,32 +1,63 @@
+/**
+
+ * NOTICE OF LICENSE
+
+ *
+
+ * This file is licenced under the Software License Agreement.
+
+ * With the purchase or the installation of the software in your application
+
+ * you accept the licence agreement.
+
+ *
+
+ * You must not modify, adapt or create derivative works of this source code
+
+ *
+
+ *  @author    Dervine N
+
+ *  @copyright Sendy Limited
+
+ *  @license   LICENSE.txt
+
+ */
+
 var from_name;
 var from_vicinity;
 var from_lat;
 var from_long;
+function initMap() {} // now it IS a function and it is in global
+
 $(document).ready(function () {
     // put your jQuery code here
     $("#api_long").closest(".form-group").hide();
     $("#api_lat").closest(".form-group").hide();
 
-    var country = 'ke';
-    var options = {componentRestrictions: {country: country}};
-    var autocomplete = new google.maps.places.Autocomplete($("#api_from")[0], options);
+   
+    console.log('ready');
+    $(() => {
+      initMap = function() {
+        console.log('initializing maps');
+        // put your jQuery code here
+        var country = 'ke';
+        var options = {componentRestrictions: {country: country}};
+        var autocomplete = new google.maps.places.Autocomplete($("#api_from")[0], options);
 
-    google.maps.event.addListener(autocomplete, 'place_changed', function () {
-        var place = autocomplete.getPlace();
-        from_name = place.name;
-        from_vicinity = place.vicinity;
-        from_lat = place.geometry.location.lat();
-        from_long = place.geometry.location.lng();
-        sendData(from_name, from_lat, from_long);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            from_name = place.name;
+            from_vicinity = place.vicinity;
+            from_lat = place.geometry.location.lat();
+            from_long = place.geometry.location.lng();
+            sendData(from_name, from_lat, from_long);
 
+        });
+
+      }
     });
 
-    function dynamicallyLoadScript(url) {
-        var script = document.createElement("script"); // Make a script DOM node
-        script.src = url; // Set it's src to the provided URL
-
-        document.head.appendChild(script); // Add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
-    }
     function sendData(from_name, from_lat, from_long) {
         var from_name = from_name;
         var from_lat = from_lat;
@@ -38,7 +69,7 @@ $(document).ready(function () {
 
         // $.ajax({
         //     type: "POST",
-        //     url: '/prestashop/modules/sendyapimodule/custom/dataReceiver.php',
+        //     url: '/prestashop/modules/sendyapimodule1/custom/dataReceiver.php',
         //     data: {
         //         from_name: from_name,
         //         from_lat: from_lat,

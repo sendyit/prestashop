@@ -16,7 +16,7 @@ This module integrates Sendy delivery service to the customers shopping flow
  - Click on the module's "Configure" link. Pay attention to any warning message that might be displayed by PrestaShop.
 - Key in Sendy API Configuration and your shop's location details then click save
 
-  ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/master/configuration.png)
+  ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/master/views/img/configuration.png)
 
  - Still in your back-office, click on the "Shipping" tab. You will find sendy as a carrier.
  - Click on sendy. On "Shipping locations and Pricing" tab, set "Billing" to "according to total price",

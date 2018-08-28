@@ -7,3 +7,12 @@
 .public_api {
   display: block;
 }
+.bootstrap .col-lg-offset-3 {
+         margin-left: 0%;
+}
+.bootstrap .fixed-width-lg {
+    width: 300px!important;
+}
+.bootstrap .fixed-width-xl {
+    width: 200px!important;
+}

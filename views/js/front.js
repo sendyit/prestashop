@@ -29,36 +29,36 @@ var to_vicinity;
 var to_lat;
 var to_long;
 
-function initMap() {} // now it IS a function and it is in global
+function initMap() {
+} // now it IS a function and it is in global
 
 
 $(document).ready(function () {
-    
     $(() => {
-      initMap = function() {
-        console.log("initiliazing maps");
-        // put your jQuery code here
-        var country = 'ke';
-        var options = {componentRestrictions: {country: country}};
-        var autocomplete = new google.maps.places.Autocomplete($("#api_to")[0], options);
+        initMap = function () {
+            console.log("initiliazing maps");
+            // put your jQuery code here
+            var country = 'ke';
+            var options = {componentRestrictions: {country: country}};
+            var autocomplete = new google.maps.places.Autocomplete($("#api_to")[0], options);
 
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            to_name = place.name;
-            to_vicinity = place.vicinity;
-            to_lat = place.geometry.location.lat();
-            to_long = place.geometry.location.lng();
-            sendRequest(to_name, to_lat, to_long);
-            getLink();
-        });
-      }
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                to_name = place.name;
+                to_vicinity = place.vicinity;
+                to_lat = place.geometry.location.lat();
+                to_long = place.geometry.location.lng();
+                sendRequest(to_name, to_lat, to_long);
+                getLink();
+            });
+        }
     });
 
     setPhoneRequired();
 
     function setPhoneRequired() {
         console.log('making phone required');
-        $('input[name=phone]').prop('required',true);
+        $('input[name=phone]').prop('required', true);
         $('input[name=phone]').parents(".form-group").find(".form-control-comment").html('');
     }
 
@@ -66,9 +66,55 @@ $(document).ready(function () {
         $('label[for=delivery_message]').html('Include more information i.e (building, room) or extra details about your order below.');
         $('#delivery_message').attr("placeholder", "Max 300 characters");
         $('#delivery_message').css("font-size", "12px");
-        $('#delivery_message').attr('maxlength','300');
+        $('#delivery_message').attr('maxlength', '300');
+        $('#delivery').append('<div><label>Please select below the day and time you would like to have your order delivered.</label>' +
+            '<div style="display: inline-block">' +
+            '<label for="pickup-day">Day:</label>\n' +
+            '<select style="color: #232323; font-size: .875rem;" id="day">\n' +
+            '  <option value="">select a day</option>\n' +
+            '  <option value="today">Later Today</option>\n' +
+            '  <option value="kesho">Tomorrow</option>\n' +
+            '</select>' +
+            '</div>' +
+            '<div style="display: inline-block; margin-left: 26px">' +
+            '<label for="pickup-time">Time:</label>\n' +
+            '<select style="color: #232323; font-size: .875rem;" id="time">' +
+            '<option value="">select a time slot</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>');
+        $("#day").change(function () {
+            let pickupDay = $(this).val();
+            $.cookie("pickupDay", pickupDay);
+            localStorage.setItem("pickupDay", $(this).val());
+            //console.log($.cookie('pickupDay'));
+            switch ($(this).val()) {
+                case 'today':
+                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+                    break;
+                case 'kesho':
+                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+                    break;
+                default:
+                    $("#time").html("<option value=''>select a time slot</option>");
+            }
+        });
+        $('#time').change(function () {
+            let pickupTime = $(this).val();
+            $.cookie("pickupTime", pickupTime);
+            localStorage.setItem("pickupTime", $(this).val());
+            //console.log($.cookie('pickupTime'));
+        });
     }
+
     setDeliveryMessage();
+
+    if ($('#day').length) {
+        $('#day').val(localStorage.getItem("pickupDay"));
+    }
+    if ($('#time').length) {
+        $('#time').val(localStorage.getItem("pickupTime"));
+    }
 
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;
@@ -85,19 +131,31 @@ $(document).ready(function () {
                 to_long: to_long
             },
             beforeSend: function () {
+                $('#info-block').hide();
                 $('.loader').show();
                 $("#submitBtn").css("background-color", "grey");
                 $("#submitBtn").val('PRICING...');
             },
             success: function (res) {
-                console.log(res);
-                 let data = JSON.parse(res);
-                 let price = data.data.amount;
-                $('.loader').hide();
-                $('.divHidden').show();
-                $(".show-price").text(price);
-                $("#submitBtn").css("display", "none");
-                setShipping(price);
+                // console.log(res);
+                let data = JSON.parse(res);
+                let price = data.data.amount;
+                if (price) {
+                    $('.loader').hide();
+                    $('.divHidden').show();
+                    $(".show-price").text(price);
+                    $("#submitBtn").css("display", "none");
+                    setShipping(price);
+                }
+                else {
+                    console.log('not in range');
+                    $('.loader').hide();
+                    $("#submitBtn").css("background-color", "#1782c5");
+                    $("#submitBtn").val('Get a Shipping Price Estimate');
+                    $('#api_to').val("");
+                    $('#api_to').attr("placeholder", "Change delivery destination");
+                    $('#info-block').show();
+                }
             }
         })
             .fail(function (er) {
@@ -110,9 +168,10 @@ $(document).ready(function () {
         var loc = window.location.pathname;
         var dir = loc.substring(0, loc.lastIndexOf('/'));
         //console.log(dir+url);
-        return dir+url;
+        return dir + url;
     }
-    function setShipping(price){
+
+    function setShipping(price) {
         let url = "/modules/sendyapimodule/custom/setShipping.php";
         $.ajax({
             type: "POST",
@@ -124,12 +183,11 @@ $(document).ready(function () {
 
             dataType: 'json',
             cache: false,
-            success: function(msg)
-            {
+            success: function (msg) {
                 console.log(msg);
                 location.reload(true);
-                $('#api_to').attr("placeholder", "Change destination");
             }
+
         });
 
     }

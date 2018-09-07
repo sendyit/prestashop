@@ -198,8 +198,8 @@ class SendyApiModule extends CarrierModule
     public function hookActionAdminControllerSetMedia($params)
     {
         $this->context->controller->addJQueryUi('ui.timepicker');
-        $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js');
         $this->context->controller->addCSS($this->getPathUri() . 'views/css/custom.css');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js');
     }
 
@@ -219,6 +219,7 @@ class SendyApiModule extends CarrierModule
             'api_long' => '36.77305249999995',
             'api_building' => 'Marsabit Plaza',  #try to prefill with location
             'api_floor' => '3', #leave blank
+            'api_delivery' => '',
             'other_details' => 'room 307' #other details
         );
         return $this->setConfigValues($this->config_values);
@@ -259,6 +260,7 @@ class SendyApiModule extends CarrierModule
                     'api_long' => '36.77305249999995',
                     'api_building' => 'Marsabit Plaza',  #try to prefill with location
                     'api_floor' => '3', #leave blank
+                    'api_delivery' => '',
                     'other_details' => 'room 307' #other details
                 );
                 $config_keys = array_keys($this->config_values);
@@ -271,7 +273,6 @@ class SendyApiModule extends CarrierModule
                 $res = $this->connectSendyApi($api_key, $api_username, $api_env);
                 $res = json_decode($res, true);
                 if ($res["status"]) {
-                    //$output .= $this->displayConfirmation($this->l(json_encode($res)));
                     if ($this->setConfigValues($this->config_values)) {
                         $output .= $this->displayConfirmation($this->l('Congratulations! You completed this step. Go to \'Shipping -> Carriers on the left side menu to continue the setup.'));
                         //$output .= $this->displayConfirmation($this->l(json_encode($this->getConfigValues())));
@@ -302,17 +303,84 @@ class SendyApiModule extends CarrierModule
                 'name' => 'Live'
             ),
         );
+//        $delivery = [
+//            [
+//                'id' => 'six',
+//                'name' => '6.00 AM - 8.00 AM',
+//                'val' => 6
+//            ],
+//            [
+//                'id' => 'eight',
+//                'name' => '8.00 AM - 10.00 AM',
+//                'val' => 8
+//            ],
+//            [
+//                'id' => 'ten',
+//                'name' => '10.00 AM - 12.00 PM',
+//                'val' => 10
+//            ],
+//            [
+//                'id' => 'noon',
+//                'name' => '12.00 PM - 2.00 PM',
+//                'val' => 12
+//            ],
+//            [
+//                'id' => 'two',
+//                'name' => '2.00 PM - 4.00 PM',
+//                'val' => 2
+//            ],
+//            [
+//                'id' => 'four',
+//                'name' => '4.00 PM - 6.00 PM',
+//                'val' => 4
+//            ],
+//            [
+//                'id' => 'late',
+//                'name' => '6.00 PM - 8.00 PM',
+//                'val' => 7
+//            ],
+//        ];
+        $delivery = array(
+            array(
+                'check_id' => 'six',
+                'name' => '6.00 AM - 8.00 AM'
+            ),
+            array(
+                'check_id' => 'eight',
+                'name' => '8.00 AM - 10.00 AM'
+            ),
+            array(
+                'check_id' => 'ten',
+                'name' => '10.00 AM - 12.00 PM'
+            ),
+            array(
+                'check_id' => 'noon',
+                'name' => '12.00 PM - 2.00 PM'
+            ),
+            array(
+                'check_id' => 'two',
+                'name' => '2.00 PM - 4.00 PM'
+            ),
+            array(
+                'check_id' => 'four',
+                'name' => '4.00 PM - 6.00 PM'
+            ),
+            array(
+                'check_id' => 'late',
+                'name' => '6.00 PM - 8.00 PM'
+            ),
+        );
         return array(
             'form' => array(
                 'legend' => array(
                     'title' => $this->displayName,
                     'icon' => 'icon-cogs'
                 ),
-                'desc' => 'Below you can set up the credentials for your store. You only need to do it once.
-                 To set it up on your test environment (Testing); use \'mysendykey\' as your Sendy Api Key and \'mysendyusername\' as your Sendy Api Username.
-                 For production environment (Live), set up your Sendy Api Key and Sendy Api Username by 
-                 logging in into your <a href="https://app.sendyit.com/biz/auth/login">Sendy Account</a>, click on Menu -> Admin Settings -> Generate API Key and Username then follow the procedure. 
-                 You need to log in as the Admin for you to access the Admin Settings panel.',
+                'desc' => '<b>Below you can set up the credentials for your store. You only need to do it once!</b><p></p><p></p>
+                 &rarr;  To set it up on your test environment <b>(Testing)</b>; use <b>\'mysendykey\'</b> as your Sendy Api Key and <b>\'mysendyusername\' </b>as your Sendy Api Username.
+                 <p></p><p>&rarr;  For production environment <b>(Live)</b>, set up your Sendy Api Key and Sendy Api Username by 
+                 logging in into your <a href="https://app.sendyit.com/biz/auth/login">Sendy Account</a>, <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Click on Menu &rarr; Admin Settings &rarr; Generate API Key and Username; then follow the procedure. 
+                 </p><p></p>&rarr;  You need to log in as the Admin for you to access the Admin Settings panel.',
                 'input' => array(
                     array(
                         'label' => $this->l('Sendy API Key'),
@@ -329,7 +397,7 @@ class SendyApiModule extends CarrierModule
                         'required' => true
                     ),
                     array(
-                        'label' => $this->l('Enviroment'),
+                        'label' => $this->l('Environment'),
                         'name' => 'api_enviroment',
                         'type' => 'select',
                         'required' => true,
@@ -371,6 +439,18 @@ class SendyApiModule extends CarrierModule
                         'name' => 'api_floor',
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
+                    ),
+                    array(
+                        'label' => $this->l('Delivery Hours'),
+                        'name' => 'api_delivery',
+                        'type' => 'select',
+                        'multiple' => 'true',
+                        'required' => true,
+                        'options' => array(
+                            'query' => $delivery,
+                            'id' => 'check_id',
+                            'name' => 'name'
+                        )
                     ),
                     array(
                         'label' => $this->l('Other Details'),
@@ -648,8 +728,6 @@ class SendyApiModule extends CarrierModule
 
     public function completeOrder($notes = 'Sample Order Note')
     {
-        //echo($_COOKIE['pickupDay']);
-        //echo($_COOKIE['pickupTime']);
         $day = $_COOKIE['pickupDay'];
         $time = $_COOKIE['pickupTime'];
         switch($day) {
@@ -680,7 +758,6 @@ class SendyApiModule extends CarrierModule
         }
         $date = $day . $time;
         $pick_up_date = date('Y-m-d H:i:s', strtotime($date));
-        //echo $pick_up_date;
         $context = Context::getContext();
         $price_request_data = $context->cookie->price_request_data;
         $price_request_data = json_decode(json_decode($price_request_data), true);
@@ -717,6 +794,13 @@ class SendyApiModule extends CarrierModule
         } else {
             $url = 'https://api.sendyit.com/v1/#request';
         }
+        if ($env == 'sandbox') {
+            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+        } else {
+            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+        }
+        //$context->cookie->__set('tracking', $tracking_url);
+        //return $_COOKIE['tracking'];
         $ch = curl_init($url);
         # Setup request to send json via POST.
         $payload = json_encode(json_decode($request, true));
@@ -731,4 +815,5 @@ class SendyApiModule extends CarrierModule
         # Print response.
         return $result;
     }
+
 }

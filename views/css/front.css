@@ -191,5 +191,16 @@
     font-size: 15px;
     color: rgba(153, 153, 153, 0.71);
 }
+#track_delivery{
+    height: 100px;
+    padding: 15px;
+    box-shadow: 2px 2px 8px 0 rgba(0,0,0,.2);
+    position: relative;
+    display: block;
+    margin-bottom: .75rem;
+    background-color: #fff;
+    border-radius: 0;
+    border: 1px solid rgba(0,0,0,.125);
+}
 
 /*# sourceMappingURL=front.css.map */

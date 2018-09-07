@@ -30,7 +30,7 @@
         <blockquote>
             <div class="dot"></div>
            <div class="input-block">
-               <input class="input" id="api_to" type="text" placeholder="Change delivery destination">
+               <input style="background-color: #F2F6FC" class="input" id="api_to" type="text" placeholder="Change delivery destination">
             </div>
             <div class="loader"></div>
             <div id="pricing" style="display: none; color: #1782c5" class="divHidden">
@@ -39,9 +39,6 @@
             </div>
             <div id="info-block" style="display: none" class="alert alert-info">
                 Please choose a location within Nairobi to deliver with Sendy.
-            </div>
-            <div>
-                <input class="btn" id="submitBtn" type="submit" value="Get a Shipping Price Estimate">
             </div>
         </blockquote>
     </div>

@@ -144,14 +144,12 @@ $(document).ready(function () {
                     $('.loader').hide();
                     $('.divHidden').show();
                     $(".show-price").text(price);
-                    $("#submitBtn").css("display", "none");
                     setShipping(price);
                 }
                 else {
                     console.log('not in range');
                     $('.loader').hide();
                     $("#submitBtn").css("background-color", "#1782c5");
-                    $("#submitBtn").val('Get a Shipping Price Estimate');
                     $('#api_to').val("");
                     $('#api_to').attr("placeholder", "Change delivery destination");
                     $('#info-block').show();
@@ -191,5 +189,7 @@ $(document).ready(function () {
         });
 
     }
-
+    let tracking_link = $.cookie('tracking');
+    console.log(tracking_link);
+    $( "<section id='track_delivery'><h3 class='card-title h3'>TRACK YOUR SENDY ORDER</h3><p>Click <a href=\" \">here </a> to track your delivery.</p></section>" ).insertAfter( "#content-hook_order_confirmation" );
 });

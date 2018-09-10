@@ -211,8 +211,8 @@ class SendyApiModule extends CarrierModule
     {
         // config should be the one saved on the sendy_api table
         $this->config_values = array(
-            'sendy_api_key' => 'mysendykey',
-            'sendy_api_username' => 'mysendyusername',
+            'sendy_api_key' => 'cdy1uf762o573xw78sf5se1y9ettx0',
+            'sendy_api_username' => 'prestauser',
             'api_enviroment' => 'sandbox',
             'api_from' => 'MarsaBit Plaza, Ngong Road, Nairobi, Kenya', #get current location here
             'api_lat' => '-1.299897',
@@ -252,8 +252,8 @@ class SendyApiModule extends CarrierModule
             /* save module configuration */
             case 'saveConfig':
                 $this->config_values = array(
-                    'sendy_api_key' => 'mysendykey',
-                    'sendy_api_username' => 'mysendyusername',
+                    'sendy_api_key' => 'cdy1uf762o573xw78sf5se1y9ettx0',
+                    'sendy_api_username' => 'prestauser',
                     'api_enviroment' => 'sandbox',
                     'api_from' => 'MarsaBit Plaza, Ngong Road, Nairobi, Kenya', #get current location here
                     'api_lat' => '-1.299897',
@@ -263,6 +263,8 @@ class SendyApiModule extends CarrierModule
                     'api_delivery' => '',
                     'other_details' => 'room 307' #other details
                 );
+                $this->config_values['[api_delivery]'] = explode(',',$obj->api_delivery);
+                $_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
                 $config_keys = array_keys($this->config_values);
                 foreach ($config_keys as $key) {
                     $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
@@ -303,43 +305,6 @@ class SendyApiModule extends CarrierModule
                 'name' => 'Live'
             ),
         );
-//        $delivery = [
-//            [
-//                'id' => 'six',
-//                'name' => '6.00 AM - 8.00 AM',
-//                'val' => 6
-//            ],
-//            [
-//                'id' => 'eight',
-//                'name' => '8.00 AM - 10.00 AM',
-//                'val' => 8
-//            ],
-//            [
-//                'id' => 'ten',
-//                'name' => '10.00 AM - 12.00 PM',
-//                'val' => 10
-//            ],
-//            [
-//                'id' => 'noon',
-//                'name' => '12.00 PM - 2.00 PM',
-//                'val' => 12
-//            ],
-//            [
-//                'id' => 'two',
-//                'name' => '2.00 PM - 4.00 PM',
-//                'val' => 2
-//            ],
-//            [
-//                'id' => 'four',
-//                'name' => '4.00 PM - 6.00 PM',
-//                'val' => 4
-//            ],
-//            [
-//                'id' => 'late',
-//                'name' => '6.00 PM - 8.00 PM',
-//                'val' => 7
-//            ],
-//        ];
         $delivery = array(
             array(
                 'check_id' => 'six',
@@ -449,7 +414,8 @@ class SendyApiModule extends CarrierModule
                         'options' => array(
                             'query' => $delivery,
                             'id' => 'check_id',
-                            'name' => 'name'
+                            'name' => 'name',
+                            'selected' =>'selected',
                         )
                     ),
                     array(
@@ -799,7 +765,8 @@ class SendyApiModule extends CarrierModule
         } else {
             $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
         }
-        //$context->cookie->__set('tracking', $tracking_url);
+        $context = Context::getContext();
+        $context->cookie->__set('tracking', $tracking_url);
         //return $_COOKIE['tracking'];
         $ch = curl_init($url);
         # Setup request to send json via POST.

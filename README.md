@@ -47,6 +47,6 @@ This module integrates Sendy delivery service to the customers shopping flow
  
   ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/dev/views/img/notes.png)
   
- - Choose Sendy and proceed to give extra information about your order in the notes section.
+ - Choose Sendy and proceed to give extra information about your order in the notes section. You can also choose the time to get youy order delivered.
 
 ##### Lets Deliver!

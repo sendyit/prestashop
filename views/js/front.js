@@ -63,58 +63,71 @@ $(document).ready(function () {
     }
 
     function setDeliveryMessage() {
+        let selectValues = {"1": "test 1", "2": "test 2"};
+        $.each(selectValues, function (key, value) {
+            $('#day')
+                .append($("<option></option>")
+                    .attr("value", key)
+                    .text(value));
+        });
         $('label[for=delivery_message]').html('Include more information i.e (building, room) or extra details about your order below.');
         $('#delivery_message').attr("placeholder", "Max 300 characters");
         $('#delivery_message').css("font-size", "12px");
         $('#delivery_message').attr('maxlength', '300');
-        $('#delivery').append('<div><label>Please select below the day and time you would like to have your order delivered.</label>' +
-            '<div style="display: inline-block">' +
-            '<label for="pickup-day">Day:</label>\n' +
-            '<select style="color: #232323; font-size: .875rem;" id="day">\n' +
-            '  <option value="">select a day</option>\n' +
-            '  <option value="today">Later Today</option>\n' +
-            '  <option value="kesho">Tomorrow</option>\n' +
-            '</select>' +
-            '</div>' +
-            '<div style="display: inline-block; margin-left: 26px">' +
-            '<label for="pickup-time">Time:</label>\n' +
-            '<select style="color: #232323; font-size: .875rem;" id="time">' +
-            '<option value="">select a time slot</option>' +
-            '</select>' +
-            '</div>' +
-            '</div>');
-        $("#day").change(function () {
-            let pickupDay = $(this).val();
-            $.cookie("pickupDay", pickupDay);
-            localStorage.setItem("pickupDay", $(this).val());
-            //console.log($.cookie('pickupDay'));
-            switch ($(this).val()) {
-                case 'today':
-                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
-                    break;
-                case 'kesho':
-                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
-                    break;
-                default:
-                    $("#time").html("<option value=''>select a time slot</option>");
-            }
+        $('#delivery').append('<div><label>Please select below the day and time you would like to have your order delivered.</label></div>');
+        $.each(selectValues, function(key, value) {
+            $('#delivery').append($("<option/>", {
+                value: key,
+                text: value
+            }));
         });
-        $('#time').change(function () {
-            let pickupTime = $(this).val();
-            $.cookie("pickupTime", pickupTime);
-            localStorage.setItem("pickupTime", $(this).val());
-            //console.log($.cookie('pickupTime'));
-        });
+        //     '<div style="display: inline-block">' +
+        //     '<label for="pickup-day">Day:</label>\n' +
+        //     '<select style="color: #232323; font-size: .875rem;" id="day">\n' +
+        //     // '  <option value="">select a day</option>\n' +
+        //     '  <option value="today">Today</option>\n' +
+        //     '  <option value="kesho">Tomorrow</option>\n' +
+        //     '</select>' +
+        //     '</div>' +
+        //     '<div style="display: inline-block; margin-left: 26px">' +
+        //     '<label for="pickup-time">Time:</label>\n' +
+        //     '<select style="color: #232323; font-size: .875rem;" id="time">' +
+        //     // '<option value="">select a time slot</option>' +
+        //     '</select>' +
+        //     '</div>' +
+        //     '</div>');
+        // $(".day").change(function () {
+        //     let pickupDay = $(this).val();
+        //     $.cookie("pickupDay", pickupDay);
+        //     localStorage.setItem("pickupDay", $(this).val());
+        //     //console.log($.cookie('pickupDay'));
+        //     switch ($(this).val()) {
+        //         case 'today':
+        //             $("#time").html("<option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+        //             break;
+        //         case 'kesho':
+        //             $("#time").html("<option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+        //             break;
+        //         default:
+        //             $("#time").html("<option value=''>select a time slot</option>");
+        //     }
+        // });
+        // $('#time').change(function () {
+        //     let pickupTime = $(this).val();
+        //     $.cookie("pickupTime", pickupTime);
+        //     localStorage.setItem("pickupTime", $(this).val());
+        //     //console.log($.cookie('pickupTime'));
+        // });
     }
 
     setDeliveryMessage();
 
-    if ($('#day').length) {
-        $('#day').val(localStorage.getItem("pickupDay"));
-    }
-    if ($('#time').length) {
-        $('#time').val(localStorage.getItem("pickupTime"));
-    }
+    // if ($('#day').length) {
+    //     $('#day').val(localStorage.getItem("pickupDay"));
+    // }
+    // if ($('#time').length) {
+    //     $('#time').val(localStorage.getItem("pickupTime"));
+    // }
 
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;
@@ -189,7 +202,8 @@ $(document).ready(function () {
         });
 
     }
+
     let tracking_link = $.cookie('tracking');
     console.log(tracking_link);
-    $( "<section id='track_delivery'><h3 class='card-title h3'>TRACK YOUR SENDY ORDER</h3><p>Click <a href=\" \">here </a> to track your delivery.</p></section>" ).insertAfter( "#content-hook_order_confirmation" );
+    $("<section id='track_delivery'><h3 class='card-title h3'>TRACK YOUR SENDY ORDER</h3><p>Click <a href=\" \">here </a> to track your delivery.</p></section>").insertAfter("#content-hook_order_confirmation");
 });

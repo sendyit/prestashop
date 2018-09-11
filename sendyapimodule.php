@@ -263,11 +263,14 @@ class SendyApiModule extends CarrierModule
                     'api_delivery' => '',
                     'other_details' => 'room 307' #other details
                 );
-                $this->config_values['[api_delivery]'] = explode(',',$obj->api_delivery);
-                $_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
+                //$this->config_values['[api_delivery]'] = explode(',', $this->config_values->api_delivery);
+                //$_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
                 $config_keys = array_keys($this->config_values);
                 foreach ($config_keys as $key) {
                     $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
+                    $delivery[] = array(
+                        'delivery' => (int)$key['api_delivery']
+                    );
                 }
                 $api_key = $this->config_values['sendy_api_key'];
                 $api_username = $this->config_values['sendy_api_username'];
@@ -277,7 +280,7 @@ class SendyApiModule extends CarrierModule
                 if ($res["status"]) {
                     if ($this->setConfigValues($this->config_values)) {
                         $output .= $this->displayConfirmation($this->l('Congratulations! You completed this step. Go to \'Shipping -> Carriers on the left side menu to continue the setup.'));
-                        //$output .= $this->displayConfirmation($this->l(json_encode($this->getConfigValues())));
+                        $output .= $this->displayConfirmation($this->l(json_encode($this->getConfigValues())));
                     }
                 } else {
                     $output .= $this->displayError($this->l($res['description']));
@@ -342,7 +345,7 @@ class SendyApiModule extends CarrierModule
                     'icon' => 'icon-cogs'
                 ),
                 'desc' => '<b>Below you can set up the credentials for your store. You only need to do it once!</b><p></p><p></p>
-                 &rarr;  To set it up on your test environment <b>(Testing)</b>; use <b>\'mysendykey\'</b> as your Sendy Api Key and <b>\'mysendyusername\' </b>as your Sendy Api Username.
+                 &rarr;  To set it up on your test environment <b>(Testing)</b>; contact us to get your own Sendy Api Key and Sendy Api Username.
                  <p></p><p>&rarr;  For production environment <b>(Live)</b>, set up your Sendy Api Key and Sendy Api Username by 
                  logging in into your <a href="https://app.sendyit.com/biz/auth/login">Sendy Account</a>, <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Click on Menu &rarr; Admin Settings &rarr; Generate API Key and Username; then follow the procedure. 
                  </p><p></p>&rarr;  You need to log in as the Admin for you to access the Admin Settings panel.',
@@ -405,18 +408,31 @@ class SendyApiModule extends CarrierModule
                         'type' => 'text',
                         'class' => 'fixed-width-lg',
                     ),
+//                    array(
+//                        'label' => $this->l('Delivery Hours'),
+//                        'name' => 'api_delivery',
+//                        'type' => 'select',
+//                        'multiple' => 'true',
+//                        'required' => true,
+//                        'options' => array(
+//                            'query' => $delivery,
+//                            'id' => 'check_id',
+//                            'name' => 'name',
+//                            'selected' => 'selected',
+//                        )
+//                    ),
                     array(
+
+                        'type' => 'checkbox',
                         'label' => $this->l('Delivery Hours'),
+                        'desc' => $this->l('Select the time you will be able to make deliveries.'),
                         'name' => 'api_delivery',
-                        'type' => 'select',
-                        'multiple' => 'true',
                         'required' => true,
-                        'options' => array(
+                        'values' => array(
                             'query' => $delivery,
                             'id' => 'check_id',
                             'name' => 'name',
-                            'selected' =>'selected',
-                        )
+                        ),
                     ),
                     array(
                         'label' => $this->l('Other Details'),
@@ -696,7 +712,7 @@ class SendyApiModule extends CarrierModule
     {
         $day = $_COOKIE['pickupDay'];
         $time = $_COOKIE['pickupTime'];
-        switch($day) {
+        switch ($day) {
             case 'today':
                 $day = date("Y-m-d");
                 break;
@@ -704,9 +720,9 @@ class SendyApiModule extends CarrierModule
                 $day = date("Y-m-d", time() + 86400);
                 break;
             default:
-                $day = " 11:00:00";
+                $day = date("Y-m-d", time());
         }
-        switch($time) {
+        switch ($time) {
             case 'morning':
                 $time = " 11:00:00";
                 break;
@@ -761,12 +777,12 @@ class SendyApiModule extends CarrierModule
             $url = 'https://api.sendyit.com/v1/#request';
         }
         if ($env == 'sandbox') {
-            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' . $order_no;
         } else {
-            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' . $order_no;
         }
-        $context = Context::getContext();
-        $context->cookie->__set('tracking', $tracking_url);
+        //$context = Context::getContext();
+        //$context->cookie->__set('tracking', $tracking_url);
         //return $_COOKIE['tracking'];
         $ch = curl_init($url);
         # Setup request to send json via POST.

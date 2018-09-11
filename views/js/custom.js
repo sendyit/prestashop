@@ -46,8 +46,8 @@ $(document).ready(function () {
     $('#groupBox_3').prop('checked', true);
     $('#zone_4').prop('checked', true);
     $('sendy_shipping').length || $('alert-success:first').attr('id','sendy_shipping');
-    $('.alert-success').html("Congratulations! You completed your Sendy configuration. Sendy delivery should now be visible for your customers.");
-    $('.module_confirmation').html("Congratulations! You completed this step. Go to \'Shipping -> Carriers'\ on the left side menu to continue the setup.");
+    // $('.alert-success').html("Congratulations! You completed your Sendy configuration. Sendy delivery should now be visible for your customers.");
+    // $('.module_confirmation').html("Congratulations! You completed this step. Go to \'Shipping -> Carriers'\ on the left side menu to continue the setup.");
     $('element').attr('id', 'value');
     $('[name="range_sup[0]"]').val("10000000.00");
     console.log('ready');

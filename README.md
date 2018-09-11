@@ -6,7 +6,7 @@ This module integrates Sendy delivery service to the customers shopping flow
  - Download prestashop here :- https://www.prestashop.com/en
  - Setup the installation
 
-## Sendy Ecommerce Prestashop plugin Installation
+## Sendy Ecommerce Prestashop plugin Installation( Prestashop 1.7.3.3)
  - Download Sendy Ecommerce from our github repo.
  - Unzip (decompress) the archive file (prestashop-master.zip).
  - Place the folder(sendyapimodule) in your prestashop/modules folder.

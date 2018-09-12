@@ -28,6 +28,13 @@
 include(dirname(__FILE__).'/../../../config/config.inc.php');
 include(_PS_ROOT_DIR_.'/init.php');
 $sendyapimodule = Module::getInstanceByName('sendyapimodule');
+$context = Context::getContext();
+$response = array(
+	// TO DO: Allow tracking multiple orders
+	"tracking_url" => $context->cookie->tracking
+);
+echo json_encode($response);
 ?>
-<script type="text/javascript">let tracking_url = "<?= $tracking_url ?>";</script>
-<script type="text/javascript" src="../views/js/front.js"></script>
+
+
+

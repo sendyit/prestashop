@@ -761,9 +761,9 @@ class SendyApiModule extends CarrierModule
             $url = 'https://api.sendyit.com/v1/#request';
         }
         if ($env == 'sandbox') {
-            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+            $tracking_url = 'https://sendyit.com/track/' .$order_no;
         } else {
-            $tracking_url = 'https://apptest.sendyit.com/biz/coporate/track_order_new/' .$order_no;
+            $tracking_url = 'https://sendyit.com/track/' .$order_no;
         }
         $context = Context::getContext();
         $context->cookie->__set('tracking', $tracking_url);
@@ -782,5 +782,6 @@ class SendyApiModule extends CarrierModule
         # Print response.
         return $result;
     }
+
 
 }

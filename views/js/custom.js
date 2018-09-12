@@ -59,8 +59,8 @@ $(document).ready(function () {
         let autocomplete = new google.maps.places.Autocomplete($("#api_from")[0], options);
         google.maps.event.addListener(autocomplete, 'place_changed',
             function () {
-            let to_name = place.name;
             let place = autocomplete.getPlace();
+            let to_name = place.name;
             let from_lat = place.geometry.location.lat();
             let from_long = place.geometry.location.lng();
             sendData(from_lat, from_long);

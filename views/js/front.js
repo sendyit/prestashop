@@ -148,6 +148,7 @@ $(document).ready(function () {
                 }
                 else {
                     console.log('not in range');
+                    console.log(res);
                     $('.loader').hide();
                     $("#submitBtn").css("background-color", "#1782c5");
                     $('#api_to').val("");
@@ -189,7 +190,28 @@ $(document).ready(function () {
         });
 
     }
-    let tracking_link = $.cookie('tracking');
-    console.log(tracking_link);
-    $( "<section id='track_delivery'><h3 class='card-title h3'>TRACK YOUR SENDY ORDER</h3><p>Click <a href=\" \">here </a> to track your delivery.</p></section>" ).insertAfter( "#content-hook_order_confirmation" );
+    function setTrackingLink() {
+        let url = "/modules/sendyapimodule/custom/sendyTracking.php";
+        $.ajax({
+            type: "POST",
+            url: getLink(url),
+            data: {
+                
+            },
+
+            dataType: 'json',
+            cache: false,
+            success: function (msg) {
+                console.log(msg);
+                $( '<section id="track_delivery"><h3 class="card-title h3">TRACK YOUR SENDY ORDER</h3><p>Click <a target="_blank" href='+ msg.tracking_url + '>here </a> to track your delivery.</p></section>' ).insertAfter( "#content-hook_order_confirmation" ); 
+            },
+            error: function(err) {
+              console.log(err);
+           }
+
+        });
+
+    }
+    setTrackingLink();
+   
 });

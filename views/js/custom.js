@@ -60,7 +60,6 @@ $(document).ready(function () {
         google.maps.event.addListener(autocomplete, 'place_changed',
             function () {
             let place = autocomplete.getPlace();
-            let to_name = place.name;
             let from_lat = place.geometry.location.lat();
             let from_long = place.geometry.location.lng();
             sendData(from_lat, from_long);

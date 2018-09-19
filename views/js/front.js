@@ -41,10 +41,14 @@ $(document).ready(function () {
             var country = 'ke';
             var options = {componentRestrictions: {country: country}};
             var autocomplete = new google.maps.places.Autocomplete($("#api_to")[0], options);
-
+            var previousAddress = $.cookie('deliveryAddress');
+            if (previousAddress) {
+                $('#api_to').val($.cookie('deliveryAddress'));
+            }
             google.maps.event.addListener(autocomplete, 'place_changed', function () {
                 var place = autocomplete.getPlace();
                 to_name = place.name;
+                $.cookie("deliveryAddress", to_name);
                 to_vicinity = place.vicinity;
                 to_lat = place.geometry.location.lat();
                 to_long = place.geometry.location.lng();
@@ -148,10 +152,8 @@ $(document).ready(function () {
                 }
                 else {
                     console.log('not in range');
-                    console.log(res);
                     $('.loader').hide();
                     $("#submitBtn").css("background-color", "#1782c5");
-                    $('#api_to').val("");
                     $('#api_to').attr("placeholder", "Change delivery destination");
                     $('#info-block').show();
                 }
@@ -203,7 +205,7 @@ $(document).ready(function () {
             cache: false,
             success: function (msg) {
                 console.log(msg);
-                $( '<section id="track_delivery"><h3 class="card-title h3">TRACK YOUR SENDY ORDER</h3><p>Click <a target="_blank" href='+ msg.tracking_url + '>here </a> to track your delivery.</p></section>' ).insertAfter( "#content-hook_order_confirmation" ); 
+                $( '<section id="track_delivery"><h3 class="card-title h3">TRACK YOUR SENDY ORDER</h3><p>Click <a target="_blank" href='+ msg.tracking_url + '>here </a> to track your delivery.</p></section>' ).insertAfter( "#content-hook_order_confirmation" );
             },
             error: function(err) {
               console.log(err);

@@ -19,7 +19,7 @@ if (!defined('_PS_VERSION_')) {
 
 class SendyApiModule extends CarrierModule
 {
-    const PREFIX = 'ps_';
+    const PREFIX = 'PS_';
 
     /** @var array Use to store the configuration from database */
     public $config_values;
@@ -210,6 +210,7 @@ class SendyApiModule extends CarrierModule
     protected function initConfig()
     {
         // config should be the one saved on the sendy_api table
+        //$this->config_values['api_delivery[]'] = explode(',',$obj->api_delivery);
         $this->config_values = array(
             'sendy_api_key' => 'cdy1uf762o573xw78sf5se1y9ettx0',
             'sendy_api_username' => 'prestauser',
@@ -219,7 +220,7 @@ class SendyApiModule extends CarrierModule
             'api_long' => '36.77305249999995',
             'api_building' => 'Marsabit Plaza',  #try to prefill with location
             'api_floor' => '3', #leave blank
-            'api_delivery' => '',
+            'api_delivery[]' => '',
             'other_details' => 'room 307' #other details
         );
         return $this->setConfigValues($this->config_values);
@@ -260,10 +261,9 @@ class SendyApiModule extends CarrierModule
                     'api_long' => '36.77305249999995',
                     'api_building' => 'Marsabit Plaza',  #try to prefill with location
                     'api_floor' => '3', #leave blank
-                    'api_delivery' => '',
+                    'api_delivery[]' => '',
                     'other_details' => 'room 307' #other details
                 );
-                $this->config_values['[api_delivery]'] = explode(',',$obj->api_delivery);
                 $_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
                 $config_keys = array_keys($this->config_values);
                 foreach ($config_keys as $key) {
@@ -407,7 +407,7 @@ class SendyApiModule extends CarrierModule
                     ),
                     array(
                         'label' => $this->l('Delivery Hours'),
-                        'name' => 'api_delivery',
+                        'name' => 'api_delivery[]',
                         'type' => 'select',
                         'multiple' => 'true',
                         'required' => true,
@@ -767,7 +767,6 @@ class SendyApiModule extends CarrierModule
         }
         $context = Context::getContext();
         $context->cookie->__set('tracking', $tracking_url);
-        //return $_COOKIE['tracking'];
         $ch = curl_init($url);
         # Setup request to send json via POST.
         $payload = json_encode(json_decode($request, true));

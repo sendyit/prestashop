@@ -63,24 +63,43 @@ $(document).ready(function () {
     }
 
     function setDeliveryMessage() {
-        let selectValues = {"1": "test 1", "2": "test 2"};
-        $.each(selectValues, function (key, value) {
-            $('#day')
-                .append($("<option></option>")
-                    .attr("value", key)
-                    .text(value));
-        });
         $('label[for=delivery_message]').html('Include more information i.e (building, room) or extra details about your order below.');
         $('#delivery_message').attr("placeholder", "Max 300 characters");
         $('#delivery_message').css("font-size", "12px");
         $('#delivery_message').attr('maxlength', '300');
-        $('#delivery').append('<div><label>Please select below the day and time you would like to have your order delivered.</label></div>');
-        $.each(selectValues, function(key, value) {
-            $('#delivery').append($("<option/>", {
-                value: key,
-                text: value
-            }));
-        });
+        $('#delivery').append('<div><label>Please select below the day and time you would like to have your order delivered.</label><div id=\'deliveryDay\'>\n' +
+            '   <select>\n' +
+            '   </select>\n' +
+            '</div></div>');
+        let delivery_day = ["Today", "Tomorrow"];
+        //let delivery_time = ["six", "eight","ten","noon","two","four","late"];
+        let delivery_time = [
+            {text:"6.00 AM - 8.00 AM", val:"six"},
+            {text:"8.00 AM - 10.00 AM", val:"eight"},
+            {text:"10.00 AM - 12.00 PM", val:"ten"},
+            {text:"12.00 PM - 2.00 PM", val:"noon"},
+            {text:"2.00 PM - 4.00 PM", val:"two"},
+            {text:"4.00 PM - 6.00 PM", val:"four"},
+            {text:"6.00 PM - 8.00 PM", val:"late"}
+            ];
+
+        let arr = [];
+        for( let i=6; i<20; i++ ) {
+            arr.push(i+":00");
+        }
+
+        let date = new Date,
+            hour = date.getHours(),
+            hourIndex = arr.indexOf(hour+":00");
+
+        let pastHours = arr.slice(0,hourIndex);
+        let futureHours = arr.slice(hourIndex);
+
+        console.log(pastHours);
+        console.log(futureHours);
+        for (let i=0;i<delivery_day.length;i++){
+            $('<option/>').val(delivery_day[i]).html(delivery_day[i]).appendTo('#deliveryDay select');
+        }
         //     '<div style="display: inline-block">' +
         //     '<label for="pickup-day">Day:</label>\n' +
         //     '<select style="color: #232323; font-size: .875rem;" id="day">\n' +

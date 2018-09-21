@@ -264,7 +264,7 @@ class SendyApiModule extends CarrierModule
                     'api_delivery[]' => '',
                     'other_details' => 'room 307' #other details
                 );
-                $_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
+                //$_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
                 $config_keys = array_keys($this->config_values);
                 foreach ($config_keys as $key) {
                     $this->config_values[$key] = Tools::getValue($key, $this->config_values[$key]);
@@ -272,6 +272,7 @@ class SendyApiModule extends CarrierModule
                 $api_key = $this->config_values['sendy_api_key'];
                 $api_username = $this->config_values['sendy_api_username'];
                 $api_env = $this->config_values['api_enviroment'];
+                $api_address = $this->config_values['api_delivery[]'];
                 $res = $this->connectSendyApi($api_key, $api_username, $api_env);
                 $res = json_decode($res, true);
                 if ($res["status"]) {
@@ -307,31 +308,31 @@ class SendyApiModule extends CarrierModule
         );
         $delivery = array(
             array(
-                'check_id' => 'six',
+                'check_id' => '0',
                 'name' => '6.00 AM - 8.00 AM'
             ),
             array(
-                'check_id' => 'eight',
+                'check_id' => '1',
                 'name' => '8.00 AM - 10.00 AM'
             ),
             array(
-                'check_id' => 'ten',
+                'check_id' => '2',
                 'name' => '10.00 AM - 12.00 PM'
             ),
             array(
-                'check_id' => 'noon',
+                'check_id' => '3',
                 'name' => '12.00 PM - 2.00 PM'
             ),
             array(
-                'check_id' => 'two',
+                'check_id' => '4',
                 'name' => '2.00 PM - 4.00 PM'
             ),
             array(
-                'check_id' => 'four',
+                'check_id' => '5',
                 'name' => '4.00 PM - 6.00 PM'
             ),
             array(
-                'check_id' => 'late',
+                'check_id' => '6',
                 'name' => '6.00 PM - 8.00 PM'
             ),
         );
@@ -343,8 +344,8 @@ class SendyApiModule extends CarrierModule
                 ),
                 'desc' => '<b>Below you can set up the credentials for your store. You only need to do it once!</b><p></p><p></p>
                  &rarr;  To set it up on your test environment <b>(Testing)</b>; use <b>\'mysendykey\'</b> as your Sendy Api Key and <b>\'mysendyusername\' </b>as your Sendy Api Username.
-                 <p></p><p>&rarr;  For production environment <b>(Live)</b>, set up your Sendy Api Key and Sendy Api Username by 
-                 logging in into your <a href="https://app.sendyit.com/biz/auth/login">Sendy Account</a>, <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Click on Menu &rarr; Admin Settings &rarr; Generate API Key and Username; then follow the procedure. 
+                 <p></p><p>&rarr;  For production environment <b>(Live)</b>, set up your Sendy Api Key and Sendy Api Username by
+                 logging in into your <a href="https://app.sendyit.com/biz/auth/login">Sendy Account</a>, <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Click on Menu &rarr; Admin Settings &rarr; Generate API Key and Username; then follow the procedure.
                  </p><p></p>&rarr;  You need to log in as the Admin for you to access the Admin Settings panel.',
                 'input' => array(
                     array(
@@ -408,10 +409,10 @@ class SendyApiModule extends CarrierModule
                     array(
                         'label' => $this->l('Delivery Hours'),
                         'name' => 'api_delivery[]',
-                        'type' => 'select',
+                        'type' => 'checkbox',
                         'multiple' => 'true',
                         'required' => true,
-                        'options' => array(
+                        'values' => array(
                             'query' => $delivery,
                             'id' => 'check_id',
                             'name' => 'name',
@@ -648,6 +649,7 @@ class SendyApiModule extends CarrierModule
         $this->context->controller->addJQueryUi('ui.datetimepicker');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/cookie.js', 'all');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/moment.js', 'all');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js', 'all');
         $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
     }
@@ -660,6 +662,7 @@ class SendyApiModule extends CarrierModule
         $this->context->controller->addJQueryUi('ui.datetimepicker');
         $this->context->controller->addJS($this->_path . '/views/js/front.js');
         $this->context->controller->addJS($this->_path . '/views/js/cookie.js');
+        $this->context->controller->addJS($this->_path . '/views/js/moment.js');
         $this->context->controller->addJS($this->_path . '/views/js/google_map.js');
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
     }
@@ -700,24 +703,33 @@ class SendyApiModule extends CarrierModule
             case 'today':
                 $day = date("Y-m-d");
                 break;
-            case 'kesho':
+            case 'nextday':
                 $day = date("Y-m-d", time() + 86400);
                 break;
             default:
-                $day = " 11:00:00";
+                $day = date("Y-m-d");
         }
         switch($time) {
-            case 'morning':
-                $time = " 11:00:00";
+            case '06:00 - 08:00':
+                $time = " 06:00:00";
                 break;
-            case 'lunch':
-                $time = " 13:00:00";
+            case '08:00 - 10:00':
+                $time = " 08:00:00";
                 break;
-            case 'evening':
-                $time = " 15:00:00";
+            case '10:00 - 12:00':
+                $time = " 10:00:00";
                 break;
-            case 'late':
-                $time = " 17:00:00";
+            case '12:00 - 14:00':
+                $time = " 12:00:00";
+                break;
+            case '14:00 - 16:00':
+                $time = " 14:00:00";
+                break;
+            case '16:00 - 18:00':
+                $time = " 16:00:00";
+                break;
+            case '18:00 - 20:00':
+                $time = " 18:00:00";
                 break;
             default:
                 $time = " 11:00:00";

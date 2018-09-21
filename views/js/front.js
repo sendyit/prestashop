@@ -75,50 +75,98 @@ $(document).ready(function () {
             '<div style="display: inline-block">' +
             '<label for="pickup-day">Day:</label>\n' +
             '<select style="color: #232323; font-size: .875rem;" id="day">\n' +
-            '  <option value="">select a day</option>\n' +
-            '  <option value="today">Later Today</option>\n' +
-            '  <option value="kesho">Tomorrow</option>\n' +
+            '  <option value="today">Today</option>\n' +
+            '  <option value="nextday">Tomorrow</option>\n' +
             '</select>' +
             '</div>' +
             '<div style="display: inline-block; margin-left: 26px">' +
             '<label for="pickup-time">Time:</label>\n' +
             '<select style="color: #232323; font-size: .875rem;" id="time">' +
-            '<option value="">select a time slot</option>' +
             '</select>' +
             '</div>' +
             '</div>');
+
+        let format = 'HH:mm';
+
+        let now = moment();
+        let currentHour = now.hour();
+
+        if(currentHour % 2 !== 0){
+            now.subtract(1, 'hour');
+            currentHour = now.hour();
+        }
+        let endDay = moment("20:00:00", format);
+        let endHour = endDay.hour();
+
+        let diff = endHour - currentHour;
+
+        let slots = Math.round(diff/2);
+
+        //console.log(slots);
+
+        let deliverySlots = [];
+        let startTime = moment(currentHour+":00:00",format);
+
+
+        for(let i = 0; i < slots; i++) {
+            let slot = {
+                "start": startTime.format(format),
+                "end": startTime.add(2, 'hours').format(format)
+            }
+
+            deliverySlots.push(slot);
+        }
         $("#day").change(function () {
             let pickupDay = $(this).val();
             $.cookie("pickupDay", pickupDay);
-            localStorage.setItem("pickupDay", $(this).val());
-            //console.log($.cookie('pickupDay'));
             switch ($(this).val()) {
                 case 'today':
-                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+                    $('#time').html("");
+                    $.each(deliverySlots, function(key, value) {
+                        $("#time").append("<option>" + value.start + " - " + value.end + "</option>");
+                    });
+                    $('#time').change(function(){
+                      var time = $(this).find("option:selected").val();
+                      $.cookie("pickupTime", time);
+                    });
                     break;
-                case 'kesho':
-                    $("#time").html("<option value=''>select a time slot</option><option value='morning'>11AM - 1PM</option><option value='lunch'>1PM - 3PM</option><option value='evening'>3PM - 5PM</option><option value='late'>5PM - 7PM</option>");
+                case 'nextday':
+                    let delivery_slots = [{
+                        start: "08:00",
+                        end: "10:00"
+                    }, {
+                        start: "10:00",
+                        end: "12:00"
+                    }, {
+                        start: "12:00",
+                        end: "14:00"
+                    }, {
+                        start: "14:00",
+                        end: "16:00"
+                    }, {
+                        start: "16:00",
+                        end: "18:00"
+                    }, {
+                        start: "18:00",
+                        end: "20:00"
+                    }];
+                    $('#time').html("");
+                    $.each(delivery_slots, function(key, value) {
+                        $("#time").append("<option>" + value.start + " - " + value.end + "</option>");
+                    });
+                    $('#time').change(function(){
+                      var time = $(this).find("option:selected").val();
+                      $.cookie("pickupTime", time);
+                    });
                     break;
-                default:
-                    $("#time").html("<option value=''>select a time slot</option>");
             }
-        });
-        $('#time').change(function () {
-            let pickupTime = $(this).val();
-            $.cookie("pickupTime", pickupTime);
-            localStorage.setItem("pickupTime", $(this).val());
-            //console.log($.cookie('pickupTime'));
         });
     }
 
     setDeliveryMessage();
 
-    if ($('#day').length) {
-        $('#day').val(localStorage.getItem("pickupDay"));
-    }
-    if ($('#time').length) {
-        $('#time').val(localStorage.getItem("pickupTime"));
-    }
+        //$('#day').val($.cookie('pickupDay'));
+        //$('#time').val($.cookie('pickupTime'));
 
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;
@@ -185,7 +233,7 @@ $(document).ready(function () {
             dataType: 'json',
             cache: false,
             success: function (msg) {
-                console.log(msg);
+                //console.log(msg);
                 location.reload(true);
             }
 
@@ -198,13 +246,13 @@ $(document).ready(function () {
             type: "POST",
             url: getLink(url),
             data: {
-                
+
             },
 
             dataType: 'json',
             cache: false,
             success: function (msg) {
-                console.log(msg);
+                //console.log(msg);
                 $( '<section id="track_delivery"><h3 class="card-title h3">TRACK YOUR SENDY ORDER</h3><p>Click <a target="_blank" href='+ msg.tracking_url + '>here </a> to track your delivery.</p></section>' ).insertAfter( "#content-hook_order_confirmation" );
             },
             error: function(err) {
@@ -215,5 +263,5 @@ $(document).ready(function () {
 
     }
     setTrackingLink();
-   
+
 });

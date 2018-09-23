@@ -71,4 +71,13 @@ $(document).ready(function () {
         $("#api_lat").val(from_lat);
         $("#api_long").val(from_long);
     }
+    $(".checkbox").change(function(event){
+        var arr = [];
+        $('input[type="checkbox"]:checked').each(function(){
+            arr.push($(this).val());
+        });
+        //console.log(arr);
+        $.cookie("pickupSlots", arr, {'path': '/'});
+    });
+
 });

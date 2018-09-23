@@ -220,7 +220,7 @@ class SendyApiModule extends CarrierModule
             'api_long' => '36.77305249999995',
             'api_building' => 'Marsabit Plaza',  #try to prefill with location
             'api_floor' => '3', #leave blank
-            'api_delivery[]' => '',
+            'api_delivery' => '',
             'other_details' => 'room 307' #other details
         );
         return $this->setConfigValues($this->config_values);
@@ -261,7 +261,7 @@ class SendyApiModule extends CarrierModule
                     'api_long' => '36.77305249999995',
                     'api_building' => 'Marsabit Plaza',  #try to prefill with location
                     'api_floor' => '3', #leave blank
-                    'api_delivery[]' => '',
+                    'api_delivery' => '',
                     'other_details' => 'room 307' #other details
                 );
                 //$_POST['api_delivery'] = implode(',', Tools::getValue('api_delivery'));
@@ -309,31 +309,38 @@ class SendyApiModule extends CarrierModule
         $delivery = array(
             array(
                 'check_id' => '0',
-                'name' => '6.00 AM - 8.00 AM'
+                'val' => '6:00 - 8:00',
+                'name' => '6:00 AM - 8:00 AM'
             ),
             array(
                 'check_id' => '1',
-                'name' => '8.00 AM - 10.00 AM'
+                'val' => '8:00 - 10:00',
+                'name' => '8:00 AM - 10:00 AM'
             ),
             array(
                 'check_id' => '2',
-                'name' => '10.00 AM - 12.00 PM'
+                'val' => '10:00 - 12:00',
+                'name' => '10:00 AM - 12:00 PM'
             ),
             array(
                 'check_id' => '3',
-                'name' => '12.00 PM - 2.00 PM'
+                'val' => '12:00 - 14:00',
+                'name' => '12:00 PM - 2:00 PM'
             ),
             array(
                 'check_id' => '4',
-                'name' => '2.00 PM - 4.00 PM'
+                'val' => '14:00 - 16:00',
+                'name' => '2:00 PM - 4:00 PM'
             ),
             array(
                 'check_id' => '5',
-                'name' => '4.00 PM - 6.00 PM'
+                'val' => '16:00 - 18:00',
+                'name' => '4:00 PM - 6:00 PM'
             ),
             array(
                 'check_id' => '6',
-                'name' => '6.00 PM - 8.00 PM'
+                'val' => '18:00 - 20:00',
+                'name' => '6:00 PM - 8:00 PM'
             ),
         );
         return array(
@@ -408,15 +415,14 @@ class SendyApiModule extends CarrierModule
                     ),
                     array(
                         'label' => $this->l('Delivery Hours'),
-                        'name' => 'api_delivery[]',
+                        'name' => 'api_delivery',
                         'type' => 'checkbox',
                         'multiple' => 'true',
                         'required' => true,
                         'values' => array(
                             'query' => $delivery,
                             'id' => 'check_id',
-                            'name' => 'name',
-                            'selected' =>'selected',
+                            'name' => 'name'
                         )
                     ),
                     array(

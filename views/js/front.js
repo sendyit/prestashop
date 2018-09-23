@@ -90,24 +90,70 @@ $(document).ready(function () {
 
         let now = moment();
         let currentHour = now.hour();
+        let shopSlots = $.cookie('pickupSlots');
+        let array = shopSlots.split(",");
+        for (i=0;i<array.length;i++){
+            let shopOpenTime = array[0];
+            if (shopOpenTime === "6:00 - 8:00") {
+                var openHour = "6";
+            }
+            else if (shopOpenTime === "8:00 - 10:00") {
+                var openHour = "8";
+            }
+            else if (shopOpenTime === "10:00 - 12:00") {
+                var openHour = "10";
+            }
+            else if (shopOpenTime === "12:00 - 14:00") {
+                var openHour = "12";
+            }
+            else if (shopOpenTime === "14:00 - 16:00") {
+                var openHour = "14";
+            }
+            else if (shopOpenTime === "16:00 - 18:00") {
+                var openHour = "16";
+            }
+            else if (shopOpenTime === "18:00 - 20:00") {
+                var openHour = "18";
+            }
+            let shopCloseTime = array[array.length-1];
+            if (shopCloseTime === "6:00 - 8:00") {
+                var closeHour = "8";
+            }
+            else if (shopCloseTime === "8:00 - 10:00") {
+                var closeHour = "10";
+            }
+            else if (shopCloseTime === "10:00 - 12:00") {
+                var closeHour = "12";
+            }
+            else if (shopCloseTime === "12:00 - 14:00") {
+                var closeHour = "14";
+            }
+            else if (shopCloseTime === "14:00 - 16:00") {
+                var closeHour = "16";
+            }
+            else if (shopCloseTime === "16:00 - 18:00") {
+                var closeHour = "18";
+            }
+            else if (shopCloseTime === "18:00 - 20:00") {
+                var closeHour = "20";
+            }
+        }
 
         if(currentHour % 2 !== 0){
             now.subtract(1, 'hour');
             currentHour = now.hour();
         }
-        let endDay = moment("20:00:00", format);
+        let endDay = moment(closeHour, format);
         let endHour = endDay.hour();
 
         let diff = endHour - currentHour;
 
         let slots = Math.round(diff/2);
 
-        //console.log(slots);
+        //console.log(diff);
 
         let deliverySlots = [];
         let startTime = moment(currentHour+":00:00",format);
-
-
         for(let i = 0; i < slots; i++) {
             let slot = {
                 "start": startTime.format(format),
@@ -116,6 +162,7 @@ $(document).ready(function () {
 
             deliverySlots.push(slot);
         }
+
         $("#day").change(function () {
             let pickupDay = $(this).val();
             $.cookie("pickupDay", pickupDay);
@@ -131,29 +178,10 @@ $(document).ready(function () {
                     });
                     break;
                 case 'nextday':
-                    let delivery_slots = [{
-                        start: "08:00",
-                        end: "10:00"
-                    }, {
-                        start: "10:00",
-                        end: "12:00"
-                    }, {
-                        start: "12:00",
-                        end: "14:00"
-                    }, {
-                        start: "14:00",
-                        end: "16:00"
-                    }, {
-                        start: "16:00",
-                        end: "18:00"
-                    }, {
-                        start: "18:00",
-                        end: "20:00"
-                    }];
                     $('#time').html("");
-                    $.each(delivery_slots, function(key, value) {
-                        $("#time").append("<option>" + value.start + " - " + value.end + "</option>");
-                    });
+                    for (i=0;i<array.length;i++){
+                        $('#time').append('<option value="'+array[i]+'">'+array[i]+'</option>');
+                    }
                     $('#time').change(function(){
                       var time = $(this).find("option:selected").val();
                       $.cookie("pickupTime", time);

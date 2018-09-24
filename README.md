@@ -24,7 +24,7 @@ This module integrates Sendy delivery service to the customers shopping flow
  - Key in Sendy API Configuration. To set it up on your testing environment, choose 'Testing' from the environment dropdown, otherwise,choose 'Live'. 
  - For both environments (Staging and Live), set up your Sendy Api Key and Sendy Api Username. 
  - To do so, log in into your Sendy account -> click on Menu -> Admin Settings -> Generate API Key and Username then follow the procedure. You need to log in as the Admin for you to access the Admin Settings panel. 
- - Set up your shop's location details then click save
+ - Set up your shop's location details and delivery hours then click save
  - Still in your back-office, click on the "Shipping" tab. You will find sendy as a carrier.
  
   ![alt text](https://raw.githubusercontent.com/sendyit/prestashop/dev/views/img/shipping.png)

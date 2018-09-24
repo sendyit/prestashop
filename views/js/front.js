@@ -91,110 +91,118 @@ $(document).ready(function () {
         let now = moment();
         let currentHour = now.hour();
         let shopSlots = $.cookie('pickupSlots');
-        let array = shopSlots.split(",");
-        for (i=0;i<array.length;i++){
-            let shopOpenTime = array[0];
-            if (shopOpenTime === "6:00 - 8:00") {
-                var openHour = "6";
+        if($.cookie('pickupSlots') !== null || $.cookie('pickupSlots') !== ""
+            || $.cookie('pickupSlots') !== "null" || $.cookie('pickupSlots') !== undefined)
+        {
+            let array = shopSlots.split(",");
+            for (i=0;i<array.length;i++){
+                let shopOpenTime = array[0];
+                if (shopOpenTime === "6:00 - 8:00") {
+                    var openHour = "6";
+                }
+                else if (shopOpenTime === "8:00 - 10:00") {
+                    var openHour = "8";
+                }
+                else if (shopOpenTime === "10:00 - 12:00") {
+                    var openHour = "10";
+                }
+                else if (shopOpenTime === "12:00 - 14:00") {
+                    var openHour = "12";
+                }
+                else if (shopOpenTime === "14:00 - 16:00") {
+                    var openHour = "14";
+                }
+                else if (shopOpenTime === "16:00 - 18:00") {
+                    var openHour = "16";
+                }
+                else if (shopOpenTime === "18:00 - 20:00") {
+                    var openHour = "18";
+                }
+                let shopCloseTime = array[array.length-1];
+                if (shopCloseTime === "6:00 - 8:00") {
+                    var closeHour = "8";
+                }
+                else if (shopCloseTime === "8:00 - 10:00") {
+                    var closeHour = "10";
+                }
+                else if (shopCloseTime === "10:00 - 12:00") {
+                    var closeHour = "12";
+                }
+                else if (shopCloseTime === "12:00 - 14:00") {
+                    var closeHour = "14";
+                }
+                else if (shopCloseTime === "14:00 - 16:00") {
+                    var closeHour = "16";
+                }
+                else if (shopCloseTime === "16:00 - 18:00") {
+                    var closeHour = "18";
+                }
+                else if (shopCloseTime === "18:00 - 20:00") {
+                    var closeHour = "20";
+                }
             }
-            else if (shopOpenTime === "8:00 - 10:00") {
-                var openHour = "8";
+            if (openHour >= currentHour){
+                var startHour = openHour;
+            }else if (openHour < currentHour) {
+                var startHour = currentHour;
             }
-            else if (shopOpenTime === "10:00 - 12:00") {
-                var openHour = "10";
+            if(startHour % 2 !== 0){
+                startHour = startHour-1;
+                //console.log(startHour);
             }
-            else if (shopOpenTime === "12:00 - 14:00") {
-                var openHour = "12";
+            let endDay = moment(closeHour, format);
+            let endHour = endDay.hour();
+
+            let diff = endHour - startHour;
+
+            let slots = Math.round(diff/2);
+
+            let deliverySlots = [];
+            let startTime = moment(startHour+":00:00",format);
+            for(let i = 0; i < slots; i++) {
+                let slot = {
+                    "start": startTime.format(format),
+                    "end": startTime.add(2, 'hours').format(format)
+                }
+
+                deliverySlots.push(slot);
             }
-            else if (shopOpenTime === "14:00 - 16:00") {
-                var openHour = "14";
-            }
-            else if (shopOpenTime === "16:00 - 18:00") {
-                var openHour = "16";
-            }
-            else if (shopOpenTime === "18:00 - 20:00") {
-                var openHour = "18";
-            }
-            let shopCloseTime = array[array.length-1];
-            if (shopCloseTime === "6:00 - 8:00") {
-                var closeHour = "8";
-            }
-            else if (shopCloseTime === "8:00 - 10:00") {
-                var closeHour = "10";
-            }
-            else if (shopCloseTime === "10:00 - 12:00") {
-                var closeHour = "12";
-            }
-            else if (shopCloseTime === "12:00 - 14:00") {
-                var closeHour = "14";
-            }
-            else if (shopCloseTime === "14:00 - 16:00") {
-                var closeHour = "16";
-            }
-            else if (shopCloseTime === "16:00 - 18:00") {
-                var closeHour = "18";
-            }
-            else if (shopCloseTime === "18:00 - 20:00") {
-                var closeHour = "20";
-            }
+
+            $('#day').val($.cookie('pickupDay'));
+            $('#time').val($.cookie('pickupTime'));
+
+            $("#day").change(function () {
+                let pickupDay = $(this).val();
+                $.cookie("pickupDay", pickupDay);
+                switch ($(this).val()) {
+                    case 'today':
+                        $('#time').html("");
+                        $.each(deliverySlots, function(key, value) {
+                            $("#time").append("<option>" + value.start + " - " + value.end + "</option>");
+                        });
+                        $('#time').change(function(){
+                            var time = $(this).find("option:selected").val();
+                            $.cookie("pickupTime", time);
+                        });
+                        break;
+                    case 'nextday':
+                        $('#time').html("");
+                        for (i=0;i<array.length;i++){
+                            $('#time').append('<option value="'+array[i]+'">'+array[i]+'</option>');
+                        }
+                        $('#time').change(function(){
+                            var time = $(this).find("option:selected").val();
+                            $.cookie("pickupTime", time);
+                        });
+                        break;
+                }
+            });
         }
 
-        if(currentHour % 2 !== 0){
-            now.subtract(1, 'hour');
-            currentHour = now.hour();
-        }
-        let endDay = moment(closeHour, format);
-        let endHour = endDay.hour();
-
-        let diff = endHour - currentHour;
-
-        let slots = Math.round(diff/2);
-
-        //console.log(diff);
-
-        let deliverySlots = [];
-        let startTime = moment(currentHour+":00:00",format);
-        for(let i = 0; i < slots; i++) {
-            let slot = {
-                "start": startTime.format(format),
-                "end": startTime.add(2, 'hours').format(format)
-            }
-
-            deliverySlots.push(slot);
-        }
-
-        $("#day").change(function () {
-            let pickupDay = $(this).val();
-            $.cookie("pickupDay", pickupDay);
-            switch ($(this).val()) {
-                case 'today':
-                    $('#time').html("");
-                    $.each(deliverySlots, function(key, value) {
-                        $("#time").append("<option>" + value.start + " - " + value.end + "</option>");
-                    });
-                    $('#time').change(function(){
-                      var time = $(this).find("option:selected").val();
-                      $.cookie("pickupTime", time);
-                    });
-                    break;
-                case 'nextday':
-                    $('#time').html("");
-                    for (i=0;i<array.length;i++){
-                        $('#time').append('<option value="'+array[i]+'">'+array[i]+'</option>');
-                    }
-                    $('#time').change(function(){
-                      var time = $(this).find("option:selected").val();
-                      $.cookie("pickupTime", time);
-                    });
-                    break;
-            }
-        });
     }
 
     setDeliveryMessage();
 
-        //$('#day').val($.cookie('pickupDay'));
-        //$('#time').val($.cookie('pickupTime'));
 
     function sendRequest(to_name, to_lat, to_long) {
         var to_name = to_name;

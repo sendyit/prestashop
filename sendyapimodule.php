@@ -654,7 +654,7 @@ class SendyApiModule extends CarrierModule
     {
         $this->context->controller->addJQueryUi('ui.datetimepicker');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/custom.js', 'all');
-        $this->context->controller->addJS($this->getPathUri() . 'views/js/cookie.js', 'all');
+        $this->context->controller->addJS($this->getPathUri() . 'views/js/jquery_cookie.js', 'all');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/moment.js', 'all');
         $this->context->controller->addJS($this->getPathUri() . 'views/js/google_map.js', 'all');
         $this->context->controller->addCSS($this->getPathUri() . 'views/js/custom.css', 'all');
@@ -667,7 +667,7 @@ class SendyApiModule extends CarrierModule
     {
         $this->context->controller->addJQueryUi('ui.datetimepicker');
         $this->context->controller->addJS($this->_path . '/views/js/front.js');
-        $this->context->controller->addJS($this->_path . '/views/js/cookie.js');
+        $this->context->controller->addJS($this->_path . '/views/js/jquery_cookie.js');
         $this->context->controller->addJS($this->_path . '/views/js/moment.js');
         $this->context->controller->addJS($this->_path . '/views/js/google_map.js');
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');

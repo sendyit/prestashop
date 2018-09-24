@@ -71,6 +71,7 @@ $(document).ready(function () {
         $("#api_lat").val(from_lat);
         $("#api_long").val(from_long);
     }
+
     $(".checkbox").change(function(event){
         var arr = [];
         $('input[type="checkbox"]:checked').each(function(){
@@ -79,5 +80,14 @@ $(document).ready(function () {
         //console.log(arr);
         $.cookie("pickupSlots", arr, {'path': '/'});
     });
+    // if($.cookie('pickupSlots') !== null || $.cookie('pickupSlots') !== ""
+    //     || $.cookie('pickupSlots') !== "null" || $.cookie('pickupSlots') !== undefined)
+    // {
+    //     var pickupSlots = $.cookie("pickupSlots");
+    //     for( i=0 ; i<pickupSlots.length ; i++) {
+    //         $('input[type="checkbox"]').prop('checked', true);
+    //     }
+    // }
+
 
 });

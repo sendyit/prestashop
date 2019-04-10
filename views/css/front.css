@@ -183,9 +183,9 @@
     height: 55px;
     border: 1px solid #1782c5;
     width: 55px;
-    margin: 0px auto;
+    margin: 0px auto -15px;
     border-radius: 50%;
-    margin-bottom: -15px;
+    /*margin-bottom: -15px;*/
     /*background-image:url('../img/direct.png');*/
     padding-top: 10px;
     font-size: 15px;

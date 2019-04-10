@@ -80,14 +80,5 @@ $(document).ready(function () {
         //console.log(arr);
         $.cookie("pickupSlots", arr, {'path': '/'});
     });
-    // if($.cookie('pickupSlots') !== null || $.cookie('pickupSlots') !== ""
-    //     || $.cookie('pickupSlots') !== "null" || $.cookie('pickupSlots') !== undefined)
-    // {
-    //     var pickupSlots = $.cookie("pickupSlots");
-    //     for( i=0 ; i<pickupSlots.length ; i++) {
-    //         $('input[type="checkbox"]').prop('checked', true);
-    //     }
-    // }
-
 
 });

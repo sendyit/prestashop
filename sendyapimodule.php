@@ -540,6 +540,7 @@ class SendyApiModule extends CarrierModule
                         },
                         "delivery_details": {
                           "pick_up_date": "2016-04-20 12:12:12",
+                          "client_type": "presta-coporate_api",
                           "collect_payment": {
                             "status": false,
                             "pay_method": 0,
